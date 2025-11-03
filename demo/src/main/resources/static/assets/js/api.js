@@ -3,10 +3,11 @@
 // ========================================
 
 // Configuração da API
-// Permite override via window.__API_BASE_URL__ ou localStorage('apiBaseUrl') para cenários de portas alternativas
-const API_BASE_URL = (typeof window !== 'undefined' && window.__API_BASE_URL__) 
-    || (typeof localStorage !== 'undefined' && localStorage.getItem('apiBaseUrl')) 
-    || 'http://localhost:8080/api';
+// Evita hardcode de localhost:8080 usando caminho relativo à origem.
+// Permite override via window.__API_BASE_URL__ ou localStorage('apiBaseUrl') para cenários específicos.
+const API_BASE_URL = (typeof window !== 'undefined' && window.__API_BASE_URL__)
+    || (typeof localStorage !== 'undefined' && localStorage.getItem('apiBaseUrl'))
+    || '/api';
 
 // ========================================
 // UTILITÁRIOS
