@@ -83,7 +83,7 @@ const LivroModals = {
             <button type="button" class="btn btn-outline" data-action="close">
                 Cancelar
             </button>
-            <button type="submit" form="form-novo-livro" class="btn btn-gold" data-action="salvar-novo-livro">
+            <button type="button" class="btn btn-gold" data-action="salvar-novo-livro">
                 <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" fill="none"/>
                     <polyline points="17 21 17 13 7 13 7 21" stroke="currentColor" fill="none"/>
@@ -193,7 +193,7 @@ const LivroModals = {
             <button type="button" class="btn btn-outline" data-action="close">
                 Cancelar
             </button>
-            <button type="submit" form="form-editar-livro" class="btn btn-gold" data-action="salvar-edicao-livro">
+            <button type="button" form="form-editar-livro" class="btn btn-gold" data-action="salvar-edicao-livro">
                 <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" fill="none"/>
                 </svg>
@@ -318,7 +318,7 @@ const LivroModals = {
             <button type="button" class="btn btn-outline" data-action="close">
                 Cancelar
             </button>
-            <button type="submit" form="form-avaliar-livro" class="btn btn-gold" data-action="salvar-avaliacao">
+            <button type="button" form="form-avaliar-livro" class="btn btn-gold" data-action="salvar-avaliacao">
                 <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke="currentColor" fill="none"/>
                 </svg>

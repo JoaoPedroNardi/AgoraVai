@@ -61,7 +61,7 @@ const FuncionarioModals = {
 
         const footerHTML = `
             <button type="button" class="btn btn-outline" data-action="close">Cancelar</button>
-            <button type="submit" form="form-novo-funcionario" class="btn btn-gold" data-action="salvar-novo-funcionario">
+            <button type="button" form="form-novo-funcionario" class="btn btn-gold" data-action="salvar-novo-funcionario">
                 <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
                     <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" fill="none"/>
                     <circle cx="8.5" cy="7" r="4" stroke="currentColor" fill="none"/>
@@ -203,7 +203,7 @@ const FuncionarioModals = {
 
         const footerHTML = `
             <button type="button" class="btn btn-outline" data-action="close">Cancelar</button>
-            <button type="submit" form="form-editar-funcionario" class="btn btn-gold" data-action="salvar-edicao-funcionario">
+            <button type="button" form="form-editar-funcionario" class="btn btn-gold" data-action="salvar-edicao-funcionario">
                 <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
                     <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" fill="currentColor"/>
                 </svg>

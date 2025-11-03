@@ -137,10 +137,8 @@ async function inicializarPainel(userId) {
         }
     }
     
-    // Inicializar modais de livros
-    if (typeof LivroModals !== 'undefined') {
-        LivroModals.init();
-    }
+    // Modais de livros já são inicializados pelo próprio módulo (DOMContentLoaded)
+    // Evitar dupla inicialização que causa múltiplos listeners
 }
 
 function configurarPesquisaClientes() {

@@ -65,7 +65,7 @@ const ClienteModals = {
             <button type="button" class="btn btn-outline" data-action="close">
                 Cancelar
             </button>
-            <button type="submit" form="form-novo-cliente" class="btn btn-gold" data-action="salvar-novo-cliente">
+            <button type="button" form="form-novo-cliente" class="btn btn-gold" data-action="salvar-novo-cliente">
                 <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
                     <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" fill="none"/>
                     <circle cx="8.5" cy="7" r="4" stroke="currentColor" fill="none"/>
@@ -139,7 +139,7 @@ const ClienteModals = {
             <button type="button" class="btn btn-outline" data-action="close">
                 Cancelar
             </button>
-            <button type="submit" form="form-editar-cliente" class="btn btn-gold" data-action="salvar-edicao-cliente">
+            <button type="button" form="form-editar-cliente" class="btn btn-gold" data-action="salvar-edicao-cliente">
                 <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" fill="none"/>
                 </svg>
@@ -216,7 +216,7 @@ const ClienteModals = {
 
         const footerHTML = `
             <button type="button" class="btn btn-outline" data-action="close">Cancelar</button>
-            <button type="submit" form="form-alterar-senha" class="btn btn-gold" data-action="salvar-alteracao-senha">
+            <button type="button" form="form-alterar-senha" class="btn btn-gold" data-action="salvar-alteracao-senha">
                 <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right: 0.5rem;">
                     <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" fill="none"/>
                 </svg>
@@ -260,6 +260,17 @@ const ClienteModals = {
                 if (!btn) return;
                 if (btn.getAttribute('data-action') === 'salvar-edicao-cliente') {
                     document.getElementById('form-editar-cliente')?.requestSubmit();
+                }
+            });
+        }
+
+        const alterarSenhaOverlay = document.getElementById('modal-alterar-senha');
+        if (alterarSenhaOverlay) {
+            alterarSenhaOverlay.addEventListener('click', (e) => {
+                const btn = e.target.closest('button[data-action]');
+                if (!btn) return;
+                if (btn.getAttribute('data-action') === 'salvar-alteracao-senha') {
+                    document.getElementById('form-alterar-senha')?.requestSubmit();
                 }
             });
         }
