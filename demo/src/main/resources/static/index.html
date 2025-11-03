@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início - Bibliotech</title>
+    <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23055"/><text x="50" y="65" font-size="60" text-anchor="middle" fill="white" font-family="Arial">B</text></svg>'>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="page-public">
+
+    <!-- HERO SECTION -->
+    <section class="hero-section ">
+        <div class="top-right-nav" id="guest-nav">
+            <a href="/pages/login.html" class="btn btn-gold">Entrar</a>
+            <a href="/pages/register.html" class="btn btn-outline-white">Cadastrar</a>
+        </div>
+
+        <div class="top-right-nav" id="user-nav" style="display:none;">
+            <div class="user-dropdown">
+                <button class="btn btn-outline-white user-menu-button" id="user-menu-trigger">
+                    <span id="user-name">Minha Conta</span>
+                </button>
+                <div class="dropdown-menu" id="user-menu">
+                    <a href="/pages/cliente.html" class="dropdown-item" id="link-cliente">Minha Conta</a>
+                    <a href="/pages/funcionario.html" class="dropdown-item" id="link-funcionario">Área do Funcionário</a>
+                    <a href="/pages/admin.html" class="dropdown-item" id="link-admin">Área do Admin</a>
+                    <a href="#" class="dropdown-item btn-logout" data-logout>Sair</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="carousel" id="hero-carousel">
+            <div class="carousel-content">
+                <div class="carousel-item" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/assets/images/slide1.webp');">
+                    <div class="slide-content">
+                        <h1>Autores Renomados</h1>
+                        <p>Descubra obras-primas da literatura mundial com nossa seleção especial de autores consagrados.</p>
+                        <a href="#" class="btn btn-lg btn-gold">Ver Mais</a>
+                    </div>
+                </div>
+                <div class="carousel-item" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/assets/images/slide2.jpg');">
+                     <div class="slide-content">
+                        <h1>Livros em Destaque</h1>
+                        <p>Explore nossa coleção cuidadosamente selecionada dos melhores títulos da atualidade.</p>
+                        <a href="#" class="btn btn-lg btn-gold">Explorar</a>
+                    </div>
+                </div>
+                <div class="carousel-item" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/assets/images/slide3.webp');">
+                    <div class="slide-content">
+                       <h1>Clássicos Atemporais</h1>
+                       <p>Mergulhe nas páginas dos grandes clássicos que moldaram a literatura mundial.</p>
+                       <a href="#" class="btn btn-lg btn-gold">Descobrir</a>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+        <button class="carousel-nav carousel-prev" id="carousel-prev"><svg width="24" height="24" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+        <button class="carousel-nav carousel-next" id="carousel-next"><svg width="24" height="24" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+        <div class="carousel-dots" id="carousel-dots"></div>
+    </section>
+
+    <!-- FEATURED SECTION -->
+    <section class="featured-section">
+    <div class="container">
+        <div class="featured-grid">
+            <div class="featured-text">
+                <h2 class="section-title">Acervo em Destaque</h2>
+                <p class="section-subtitle">
+                    Explore nossa coleção especial de obras selecionadas por especialistas. Livros que marcaram época e continuam a inspirar gerações de leitores ao redor do mundo.
+                </p>
+                <p class="section-subtitle" style="margin-top: 1rem;">
+                    Obras clássicas, contemporâneas e recomendações que não podem faltar em sua biblioteca pessoal.
+                </p>
+                <a href="#" class="btn btn-gold btn-lg" style="margin-top: 2rem;">Ver Coleção</a>
+            </div>
+            <div class="featured-image-wrapper">
+                <img src="https://placehold.co/600x450/554236/f5f0e8?text=Acervo+Especial" alt="Livros em destaque">
+            </div>
+        </div>
+    </div>
+    </section>
+
+    <section class="container">
+        <div class="section-header">
+            <h2 class="section-title">Clássicos Imperdíveis</h2>
+            <p class="section-subtitle">Grandes obras que atravessaram séculos e continuam relevantes. Livros que definiram a literatura mundial e moldaram o pensamento humano através das gerações.</p>
+        </div>
+        <div class="actions" style="display:flex; gap:0.5rem; margin-bottom:1rem; align-items:center;">
+            <input id="home-search-input" type="text" placeholder="Buscar por título..." class="search-input" style="flex:1;">
+            <button id="home-search-btn" class="btn btn-gold">Buscar</button>
+        </div>
+        <div class="book-grid"></div>
+    </section>
+
+    <section class="promotions-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Promoções e Aluguel</h2>
+            </div>
+            <div class="promo-grid">
+                <div class="card book-card">
+                    <img src="https://placehold.co/300x400/8a0000/ffffff?text=It" alt="It - A Coisa">
+                    <div class="content">
+                        <h3>It - A Coisa</h3>
+                        <p class="subtext">Stephen King</p>
+                        <div class="price-info"><span class="price">R$ 29,90</span><span class="original-price">R$ 59,90</span></div>
+                <a href="/pages/livro.html" class="btn btn-gold" style="width: 100%">Ver Mais</a>
+                    </div>
+                </div>
+                <div class="card bestsellers-card">
+                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Os Livros Mais Vendidos</h3>
+                    <p class="subtext" style="margin-bottom: 1.5rem;">Descubra os títulos que estão conquistando leitores no mundo todo. Nossa seleção dos mais vendidos é atualizada semanalmente.</p>
+                    <div class="bestsellers-images">
+                        <img src="https://placehold.co/150x200/554236/f5f0e8?text=Best+1" alt="Bestseller 1">
+                        <img src="https://placehold.co/150x200/8c6d4e/ffffff?text=Best+2" alt="Bestseller 2">
+                        <img src="https://placehold.co/150x200/8a0000/ffffff?text=Best+3" alt="Bestseller 3">
+                    </div>
+                    <a href="#" class="btn btn-gold" style="width: 100%;">Ver Todos os Bestsellers</a>
+                </div>
+            </div>
+
+            <div class="section-header" style="margin-top: 4rem;">
+                <h2 class="section-title">Categorias</h2>
+            </div>
+            <div class="category-pills">
+                <button class="btn active">Ficção</button>
+                <button class="btn">Romance</button>
+                <button class="btn">Mistério</button>
+                <button class="btn">Biografias</button>
+                <button class="btn">História</button>
+                <button class="btn">Ciência</button>
+                <button class="btn">Fantasia</button>
+                <button class="btn">Terror</button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <div class="logo">
+                        <svg width="32" height="32" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                        <h3>Bibliotech</h3>
+                    </div>
+                    <p class="subtext">Sua livraria online com os melhores títulos da literatura mundial. Descubra, compre e alugue livros com facilidade.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Links Rápidos</h4>
+                    <ul>
+                        <li><a href="#">Início</a></li><li><a href="#">Catálogo</a></li><li><a href="#">Promoções</a></li><li><a href="#">Sobre</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categorias</h4>
+                    <ul>
+                        <li><a href="#">Ficção</a></li><li><a href="#">Romance</a></li><li><a href="#">Mistério</a></li><li><a href="#">Biografia</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contato</h4>
+                    <ul>
+                        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2a19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 5.27 5.27A19.79 19.79 0 0 1 2.2 13.58A2 2 0 0 1 4 11h3a2 2 0 0 1 2 1.72a12.84 12.84 0 0 0 .7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45a12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>(11) 99999-9999</span></li>
+                        <li><svg width="16" height="16" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>contato@bibliotech.com</span></li>
+                        <li><svg width="16" height="16" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg><span>São Paulo, SP</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 Bibliotech. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/assets/js/toast.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/script.js"></script>
+
+    <script src="/assets/js/modal.js"></script>
+    <script src="/assets/js/carrinho.js"></script>
+    <script src="/assets/js/livro-modals.js"></script>
+    <script src="/assets/js/cliente-modals.js"></script>
+
+    
+
+
+</body>
+</html>
+

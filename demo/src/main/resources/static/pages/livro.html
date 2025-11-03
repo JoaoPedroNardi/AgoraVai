@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <title>Livro - Bibliotech</title>
+</head>
+<body class="livro-page">
+    <div class="header">
+        <span class="back-arrow">←</span>
+        <span>Voltar</span>
+    </div>
+
+    <div class="main-container">
+        <div class="book-cover-section">
+            <div class="book-cover">
+                <div class="cover-border">
+                    <div class="cover-inner-border"></div>
+                    <div class="book-title">
+                        <div class="title-main">DOM</div>
+                        <div class="title-main">QUIXOTE</div>
+                        <div class="title-de">DE</div>
+                        <div class="title-sub">QUIXOTE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="book-details">
+            <div class="genre-tag" id="genre-tag">-</div>
+            
+            <h1 class="book-title-main" id="book-title">-</h1>
+            <p class="author" id="book-author">-</p>
+            
+            <div class="rating">
+                <span class="stars" id="rating-stars">★★★★★</span>
+                <span class="rating-text" id="rating-text">-</span>
+            </div>
+
+            <div class="acquisition-options">
+                <h3 class="section-title">Opções de Aquisição</h3>
+                
+                <div class="option-card">
+                    <div class="option-info">
+                        <h4>Comprar</h4>
+                        <div class="price" id="price-compra">-</div>
+                    </div>
+                    <button class="btn btn-primary" id="btn-comprar">🛒 Comprar</button>
+                </div>
+
+                <div class="option-card">
+                    <div class="option-info">
+                        <h4>Alugar (Digital)</h4>
+                        <div class="price" id="price-aluguel">-</div>
+                    </div>
+                    <button class="btn btn-secondary" id="btn-alugar">📖 Alugar</button>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" id="btn-favoritar" title="Favoritar">♡</button>
+                <button class="action-btn" id="btn-compartilhar" title="Compartilhar">↗</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="bottom-section">
+            <div class="book-info">
+                <h3 class="section-title">Sobre o Livro</h3>
+                <p class="book-description" id="book-description">
+                    Descrição não disponível.
+                </p>
+
+                <div class="book-meta" id="book-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Gênero:</span>
+                        <span class="meta-value" id="meta-genero">-</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Publicação:</span>
+                        <span class="meta-value" id="meta-publicacao">-</span>
+                    </div>
+                    
+                    <div class="meta-item">
+                        <span class="meta-label">Preço Compra:</span>
+                        <span class="meta-value" id="meta-preco-compra">-</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Preço Aluguel:</span>
+                        <span class="meta-value" id="meta-preco-aluguel">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reviews-section">
+                <h3 class="section-title">Avaliações</h3>
+                <div class="reviews-actions" style="margin: 0.5rem 0 1rem;">
+                    <button class="btn btn-gold" id="btn-avaliar">Avaliar este livro</button>
+                    <p id="avaliar-hint" class="subtext" style="color:#666; margin-top: 0.5rem; display: none;">
+                        Você só pode avaliar livros que comprou ou alugou.
+                    </p>
+                </div>
+                <div id="reviews-container">
+                    <p class="subtext" style="color:#666;">Nenhuma avaliação encontrada.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts utilitários e integração -->
+    <script src="/assets/js/toast.js"></script>
+    <script src="/assets/js/modal.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/livro-modals.js"></script>
+    <script src="/assets/js/carrinho.js"></script>
+    <script src="/assets/js/livro.js"></script>
+    <div id="toast-container"></div>
+</body>
+</html>

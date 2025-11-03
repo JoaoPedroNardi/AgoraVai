@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Conta - Bibliotech</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="page-panel">
+    <div class="container">
+        <!-- CABEÇALHO DA PÁGINA -->
+        <header class="page-header">
+            <div>
+                <h1>Minha Conta</h1>
+                <p>Gerencie seus empréstimos, multas e informações pessoais.</p>
+            </div>
+            <a href="/index.html" class="btn btn-outline">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+                Voltar ao Início
+            </a>
+        </header>
+
+        <!-- CONTAINER DAS ABAS -->
+        <div class="tabs-container">
+            <!-- NAVEGAÇÃO DAS ABAS -->
+            <div class="tabs-list">
+                <button class="tabs-trigger active" data-tab="emprestimos">
+                    <svg width="16" height="16" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+                    Minhas Compras
+                </button>
+                <button class="tabs-trigger" data-tab="informacoes">
+                    <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Minhas Informações
+                </button>
+            </div>
+
+            <!-- CONTEÚDO DA ABA: EMPRÉSTIMOS -->
+            <div id="tab-emprestimos" class="tabs-content active">
+                <div class="card">
+                    <div class="card-header"><h2 class="card-title">Minhas Compras</h2></div>
+                    <div class="card-content with-padding" style="display: grid; gap: 1rem;"></div>
+                </div>
+            </div>
+
+            <!-- CONTEÚDO DA ABA: MULTAS -->
+            <div id="tab-multas" class="tabs-content">
+                <div class="card">
+                    <div class="card-header"><h2 class="card-title">Minhas Multas</h2></div>
+                     <div class="card-content with-padding" style="display: grid; gap: 1rem;"></div>
+                </div>
+            </div>
+
+            <!-- CONTEÚDO DA ABA: INFORMAÇÕES -->
+            <div id="tab-informacoes" class="tabs-content">
+                <div class="card">
+                    <div class="card-header"><h2 class="card-title">Minhas Informações</h2></div>
+                    <div class="card-content with-padding">
+                        <div class="info-grid"></div>
+                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                            <button class="btn btn-gold" id="btn-editar-minhas-informacoes">
+                                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                                Editar Informações
+                            </button>
+                            <button class="btn btn-outline" id="btn-alterar-senha" style="margin-left: 0.75rem;">
+                                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm6-7V7a6 6 0 0 0-12 0v3H4v10h16V10h-2Zm-10 0V7a4 4 0 0 1 8 0v3H8Z"/></svg>
+                                Alterar Senha
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CONTEÚDO DA ABA: LIVROS -->
+            <div id="tab-livros" class="tabs-content">
+                <div class="card">
+                     <div class="card-header"><h2 class="card-title">Meus Livros</h2></div>
+                     <div class="card-content with-padding">
+                        <div class="book-grid"></div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/js/toast.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/script.js"></script>
+    <script src="/assets/js/cliente.js"></script>
+
+    <script src="/assets/js/modal.js"></script>
+    <script src="/assets/js/carrinho.js"></script>
+    <script src="/assets/js/livro-modals.js"></script>
+    <script src="/assets/js/cliente-modals.js"></script>
+    <div id="toast-container"></div>
+</body>
+</html>
+

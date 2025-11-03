@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Funcionário - Bibliotech</title>
+    <script>
+      window.__API_BASE_URL__ = 'http://localhost:8080/api';
+      try { localStorage.setItem('apiBaseUrl', window.__API_BASE_URL__); } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="page-panel">
+    <div class="container">
+        <!-- CABEÇALHO DA PÁGINA -->
+        <header class="page-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Painel do Funcionário</h1>
+                    <p>Gerencie empréstimos, multas, clientes e avaliações da biblioteca.</p>
+                </div>
+            <a href="/index.html" class="btn btn-outline">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+                Voltar ao Início
+            </a>
+            </div>
+        </header>
+
+        <!-- CONTAINER DAS ABAS -->
+        <div class="tabs-container">
+            <!-- NAVEGAÇÃO DAS ABAS -->
+            <div class="tabs-list">
+                <button class="tabs-trigger active" data-tab="compras">
+                    <svg width="16" height="16" viewBox="0 0 24 24"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Compras
+                </button>
+                <button class="tabs-trigger" data-tab="clientes">
+                    <svg width="16" height="16" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Clientes
+                </button>
+                <button class="tabs-trigger" data-tab="avaliacoes">
+                    <svg width="16" height="16" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    Avaliações
+                </button>
+                <button class="tabs-trigger" data-tab="informacoes">
+                    <svg width="16" height="16" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Minhas Informações
+                </button>
+            </div>
+
+            <!-- CONTEÚDO DA ABA: COMPRAS -->
+            <div id="tab-compras" class="tabs-content active">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                           <svg width="20" height="20" viewBox="0 0 24 24"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            Gerenciar Compras
+                        </h2>
+                        <div class="actions">
+                            <input type="text" placeholder="Buscar por cliente, ID ou livro..." class="search-input">
+                            <select id="filtro-status-func" class="select-input" style="min-width: 160px;">
+                                <option value="">Status: Todos</option>
+                                <option value="PENDENTE">Pendente</option>
+                                <option value="FINALIZADA">Finalizada</option>
+                                <option value="CANCELADA">Cancelada</option>
+                            </select>
+                            <select id="filtro-tipo-func" class="select-input" style="min-width: 140px;">
+                                <option value="">Tipo: Todos</option>
+                                <option value="COMPRA">Compra</option>
+                                <option value="ALUGUEL">Aluguel</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Cliente</th>
+                                        <th>Livro</th>
+                                        <th>Valor</th>
+                                        <th>Dias Restante</th>
+                                        <th>Modo de compra</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTEÚDO DA ABA: CLIENTES -->
+            <div id="tab-clientes" class="tabs-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Gerenciar Clientes
+                        </h2>
+                        <div class="actions">
+                            <input type="text" placeholder="Buscar por nome ou ID..." class="search-input">
+                            <button class="btn btn-gold" data-action="novo-cliente">
+                                <svg width="16" height="16" viewBox="0 0 24 24"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+                                Novo Cliente
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nome</th>
+                                        <th>Contato</th>
+                                        <th>Compras</th>
+                                        <th>Aluguéis</th>
+                                        <th>Total</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTEÚDO DA ABA: AVALIAÇÕES -->
+            <div id="tab-avaliacoes" class="tabs-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            Avaliações dos Livros
+                        </h2>
+                        <div class="actions">
+                            <input type="text" placeholder="Buscar por livro ou cliente..." class="search-input">
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Livro</th>
+                                        <th>Cliente</th>
+                                        <th>Avaliação</th>
+                                        <th>Comentário</th>
+                                        <th>Data</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTEÚDO DA ABA: INFORMAÇÕES -->
+            <div id="tab-informacoes" class="tabs-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Minhas Informações</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="info-grid"></div>
+                        <div class="card-actions">
+                            <button class="btn btn-gold" id="btn-editar-minhas-informacoes">Editar Informações</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/assets/js/toast.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/script.js"></script>
+    <script src="/assets/js/funcionario.js"></script>
+
+    <script src="/assets/js/modal.js"></script>
+    <script src="/assets/js/carrinho.js"></script>
+    <script src="/assets/js/livro-modals.js"></script>
+    <script src="/assets/js/cliente-modals.js"></script>
+    <script src="/assets/js/funcionario-modals.js"></script>
+    <div id="toast-container"></div>
+</body>
+</html>
+
