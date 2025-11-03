@@ -85,22 +85,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // Permitir origens comuns de desenvolvimento (inclui o servidor de preview em 8000)
-        config.setAllowedOrigins(Arrays.asList(
-            // Servidores estáticos comuns
-            "http://localhost:8000",
-            "http://127.0.0.1:8000",
-            // Porta alternativa usada nesta validação
-            "http://localhost:8001",
-            "http://127.0.0.1:8001",
-            // Ambientes front-end de desenvolvimento
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-            "http://localhost:5500",
-            "http://127.0.0.1:5500"
-        ));
+        // Permitir qualquer origem (inclui domínio do Railway em produção)
+        // Use allowedOriginPatterns com "*" quando allowCredentials(true)
+        config.setAllowedOriginPatterns(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setExposedHeaders(Arrays.asList("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
