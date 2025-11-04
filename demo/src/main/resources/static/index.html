@@ -37,21 +37,18 @@
                     <div class="slide-content">
                         <h1>Autores Renomados</h1>
                         <p>Descubra obras-primas da literatura mundial com nossa seleção especial de autores consagrados.</p>
-                        <a href="#" class="btn btn-lg btn-gold">Ver Mais</a>
                     </div>
                 </div>
                 <div class="carousel-item" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/assets/images/slide2.jpg');">
                      <div class="slide-content">
                         <h1>Livros em Destaque</h1>
                         <p>Explore nossa coleção cuidadosamente selecionada dos melhores títulos da atualidade.</p>
-                        <a href="#" class="btn btn-lg btn-gold">Explorar</a>
                     </div>
                 </div>
                 <div class="carousel-item" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/assets/images/slide3.webp');">
                     <div class="slide-content">
                        <h1>Clássicos Atemporais</h1>
                        <p>Mergulhe nas páginas dos grandes clássicos que moldaram a literatura mundial.</p>
-                       <a href="#" class="btn btn-lg btn-gold">Descobrir</a>
                    </div>
                </div>
             </div>
@@ -59,7 +56,7 @@
 
         <button class="carousel-nav carousel-prev" id="carousel-prev"><svg width="24" height="24" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
         <button class="carousel-nav carousel-next" id="carousel-next"><svg width="24" height="24" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
-        <div class="carousel-dots" id="carousel-dots"></div>
+        
     </section>
 
     
@@ -71,18 +68,20 @@
         </div>
         <div class="search-toolbar">
             <input id="home-search-input" type="text" placeholder="Buscar por título..." class="search-input">
-            <select id="home-category-select" class="select-input" aria-label="Selecionar categoria">
-                <option value="">Categoria: Todas</option>
-                <option value="Ficção">Ficção</option>
-                <option value="Romance">Romance</option>
-                <option value="Mistério">Mistério</option>
-                <option value="Biografias">Biografias</option>
-                <option value="História">História</option>
-                <option value="Ciência">Ciência</option>
-                <option value="Fantasia">Fantasia</option>
-                <option value="Terror">Terror</option>
-            </select>
-            <button id="home-search-btn" class="btn btn-gold">Buscar</button>
+            <div class="search-actions">
+                <select id="home-category-select" class="select-input" aria-label="Selecionar categoria">
+                    <option value="">Categoria: Todas</option>
+                    <option value="Ficção">Ficção</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Mistério">Mistério</option>
+                    <option value="Biografias">Biografias</option>
+                    <option value="História">História</option>
+                    <option value="Ciência">Ciência</option>
+                    <option value="Fantasia">Fantasia</option>
+                    <option value="Terror">Terror</option>
+                </select>
+                <button id="home-search-btn" class="btn btn-gold">Buscar</button>
+            </div>
         </div>
         <div class="book-grid"></div>
     </section>

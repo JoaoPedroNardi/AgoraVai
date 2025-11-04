@@ -533,3 +533,39 @@ window.FuncionarioAPI = FuncionarioAPI;
 window.AdminAPI = AdminAPI;
 window.AuthAPI = AuthAPI;
 window.UI = UI;
+
+// ======================================================
+// Fallback leve para Preview Estático (ex.: porta 8085)
+// Objetivo: evitar erros ao carregar livros quando o backend não está ativo
+// Não afeta produção; só ativa no ambiente estático/preview.
+// ======================================================
+try {
+    const isStaticPreview = (typeof window !== 'undefined') && (
+        !!window.__STATIC_PREVIEW__ || /:8085$/.test(window.location.host)
+    );
+    if (isStaticPreview && typeof window !== 'undefined' && window.LivroAPI) {
+        const SAMPLE_BOOKS = [
+            { idLivro: 1, titulo: 'O Senhor dos Anéis', autor: 'J.R.R. Tolkien', genero: 'Fantasia', capaUrl: '/assets/images/capas/senhor-dos-aneis.jpg', vlCompra: 89.9, vlAluguel: 19.9 },
+            { idLivro: 2, titulo: 'Harry Potter e a Pedra Filosofal', autor: 'J.K. Rowling', genero: 'Fantasia', capaUrl: '/assets/images/capas/harry-potter-1.jpg', vlCompra: 59.9, vlAluguel: 14.9 },
+            { idLivro: 3, titulo: 'Diário de um Banana', autor: 'Jeff Kinney', genero: 'Infantojuvenil', capaUrl: '/assets/images/capas/diario-de-um-banana.jpg', vlCompra: 39.9, vlAluguel: 9.9 },
+            { idLivro: 4, titulo: 'Trono de Vidro', autor: 'Sarah J. Maas', genero: 'Fantasia', capaUrl: '/assets/images/capas/trono-de-vidro.jpg', vlCompra: 69.9, vlAluguel: 16.9 },
+            { idLivro: 5, titulo: 'Duna', autor: 'Frank Herbert', genero: 'Ficção Científica', capaUrl: '/assets/images/capas/duna.jpg', vlCompra: 79.9, vlAluguel: 18.9 }
+        ];
+
+        const normalize = (s) => String(s || '').toLowerCase();
+        window.LivroAPI.listarTodos = async () => SAMPLE_BOOKS;
+        window.LivroAPI.buscarPorTitulo = async (titulo) => {
+            const q = normalize(titulo);
+            return SAMPLE_BOOKS.filter(b => normalize(b.titulo).includes(q));
+        };
+        window.LivroAPI.buscarPorGenero = async (genero) => {
+            const q = normalize(genero);
+            return SAMPLE_BOOKS.filter(b => normalize(b.genero).includes(q));
+        };
+        // Opcional: listarDisponiveis igual ao listarTodos
+        if (window.LivroAPI.listarDisponiveis) {
+            window.LivroAPI.listarDisponiveis = async () => SAMPLE_BOOKS;
+        }
+        console.info('Preview estático ativo: usando dados de exemplo para livros.');
+    }
+} catch (_) { /* ignora erros de ambiente */ }
