@@ -1,4 +1,4 @@
-﻿// ========================================
+// ========================================
 // ADMIN.JS - PAINEL DO ADMINISTRADOR
 // ========================================
 
@@ -649,7 +649,7 @@ function renderizarAvaliacoes(tbody, avaliacoes) {
             <td>${avaliacao.livro.titulo}<div class="subtext">${avaliacao.livro.autor}</div></td>
             <td>${avaliacao.cliente.nome}</td>
             <td><div class="stars">${Utils.renderizarEstrelas(parseFloat(avaliacao.nota))}</div></td>
-            <td class="comment">Muito bom!</td>
+            <td class="comment">${Utils.comentarioPorEstrelas(parseFloat(avaliacao.nota), avaliacao.comentario)}</td>
             <td><div class="subtext">${UI.formatDate(avaliacao.dtAvaliacao)}</div></td>
             <td>
                 <div class="action-buttons">

@@ -185,11 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Eventos de busca na home
         if (homeSearchInput) {
+            const debouncedLoad = Utils.debounce((q) => loadHomeBooks(q), 300);
             homeSearchInput.addEventListener('keyup', (e) => {
                 const q = e.target.value;
                 // Busca quando digitar 2+ caracteres, limpa quando vazio
                 if (q.trim().length === 0 || q.trim().length >= 2) {
-                    loadHomeBooks(q);
+                    debouncedLoad(q);
                 }
             });
         }
