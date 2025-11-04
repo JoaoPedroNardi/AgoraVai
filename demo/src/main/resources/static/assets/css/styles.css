@@ -517,7 +517,9 @@ svg {
 .book-card img { 
     width: 100%; 
     aspect-ratio: 3 / 4; 
-    object-fit: cover; 
+    object-fit: contain; 
+    background-color: var(--card);
+    display: block;
 }
 
 .book-card .content { 

@@ -164,6 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="card book-card">
                         <img src="${imgSrc}" alt="${livro.titulo || 'Livro'}">
                         <div class="content">
+                            <h3>${livro.titulo || 'Livro'}</h3>
+                            <p class="subtext">${livro.autor || ''}</p>
                             <div class="price-info">${precoHtml}${aluguelHtml}</div>
                             <a href="/pages/livro.html?id=${livro.idLivro}" class="btn btn-gold" style="width: 100%">Ver Mais</a>
                         </div>
