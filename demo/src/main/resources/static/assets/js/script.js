@@ -304,29 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <a href="/pages/catalogo.html" class="btn btn-gold" style="width: 100%;">Ver Todos os Bestsellers</a>
                     </div>`;
-                // Faixa de promoção abaixo dos mais vendidos: 20% OFF na compra (com capa e detalhes)
-                const precoCompra = (destaque?.vlCompra != null) ? Number(destaque.vlCompra) : null;
-                const precoComDesconto = (precoCompra != null) ? (precoCompra * 0.8) : null;
-                const promoLink = destaque?.idLivro ? `/pages/livro.html?id=${encodeURIComponent(destaque.idLivro)}` : '#';
-                const promoStrip = `
-                    <a class="promo-deal" href="${promoLink}">
-                        <div class="promo-thumb">
-                            <img src="${destaqueImg}" alt="${destaque?.titulo || 'Livro'}">
-                        </div>
-                        <div class="promo-deal-content">
-                            <div>
-                                <div class="title">${destaque?.titulo || ''}</div>
-                                <div class="author">${destaque?.autor || ''}</div>
-                            </div>
-                            ${precoComDesconto != null
-                                ? `<span class="price-discounted">${UI.formatCurrency(precoComDesconto)}</span>
-                                   <span class="original-price">${UI.formatCurrency(precoCompra)}</span>
-                                   <span class="caption">20% de desconto na compra</span>`
-                                : `<span class="caption">Consulte valores de compra para este título</span>`}
-                        </div>
-                    </a>`;
-
-                promoGrid.innerHTML = leftHtml + rightHtml + promoStrip;
+                // Removida a faixa de promoção: renderiza apenas destaque e mais vendidos
+                promoGrid.innerHTML = leftHtml + rightHtml;
             } catch (error) {
                 console.error('Erro ao carregar mais vendidos:', error);
             }
