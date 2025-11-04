@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 homeBookGrid.innerHTML = '<div class="subtext" style="padding: 2rem; text-align:center; color: var(--muted-foreground);">Nenhum livro disponível</div>';
                 return;
             }
-            const max = Math.min(livros.length, 8);
+            const max = Math.min(livros.length, 10);
             for (let i = 0; i < max; i++) {
                 const livro = livros[i];
                 const precoHtml = (livro.vlCompra != null) ? `<span class="price">${UI.formatCurrency(livro.vlCompra)}</span>` : '';
