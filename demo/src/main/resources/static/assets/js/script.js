@@ -158,7 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < max; i++) {
                 const livro = livros[i];
                 const precoHtml = (livro.vlCompra != null) ? `<span class="price">${UI.formatCurrency(livro.vlCompra)}</span>` : '';
-                const aluguelHtml = (livro.vlAluguel != null) ? `<span class="original-price">${UI.formatCurrency(livro.vlAluguel)}</span>` : '';
                 const imgSrc = resolveCoverUrl(livro.capaUrl) || 'https://placehold.co/300x400/0a2342/ffffff?text=Livro';
                 const cardHtml = `
                     <div class="card book-card">
@@ -166,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="content">
                             <h3>${livro.titulo || 'Livro'}</h3>
                             <p class="subtext">${livro.autor || ''}</p>
-                            <div class="price-info">${precoHtml}${aluguelHtml}</div>
+                            <div class="price-info">${precoHtml}</div>
                             <a href="/pages/livro.html?id=${livro.idLivro}" class="btn btn-gold" style="width: 100%">Ver Mais</a>
                         </div>
                     </div>`;
@@ -276,14 +275,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const destaque = top[0]?.livro;
                 const destaqueImg = resolveCoverUrlPromo(destaque?.capaUrl) || 'https://placehold.co/300x400/0a2342/ffffff?text=Livro';
                 const precoHtml = (destaque?.vlCompra != null) ? `<span class="price">${UI.formatCurrency(destaque.vlCompra)}</span>` : '';
-                const aluguelHtml = (destaque?.vlAluguel != null) ? `<span class="original-price">${UI.formatCurrency(destaque.vlAluguel)}</span>` : '';
                 const leftHtml = `
                     <div class="card book-card">
                         <img src="${destaqueImg}" alt="${destaque?.titulo || 'Livro'}">
                         <div class="content">
                             <h3>${destaque?.titulo || 'Livro'}</h3>
                             <p class="subtext">${destaque?.autor || ''}</p>
-                            <div class="price-info">${precoHtml}${aluguelHtml}</div>
+                            <div class="price-info">${precoHtml}</div>
                             <a href="/pages/livro.html?id=${destaque?.idLivro}" class="btn btn-gold" style="width: 100%">Ver Mais</a>
                         </div>
                     </div>`;
@@ -306,8 +304,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <a href="/pages/catalogo.html" class="btn btn-gold" style="width: 100%;">Ver Todos os Bestsellers</a>
                     </div>`;
+                // Faixa de promoção abaixo dos mais vendidos: 20% OFF na compra
+                const precoCompra = (destaque?.vlCompra != null) ? Number(destaque.vlCompra) : null;
+                const precoComDesconto = (precoCompra != null) ? (precoCompra * 0.8) : null;
+                const promoStrip = `
+                    <div class="promo-deal">
+                        <div class="promo-deal-content">
+                            <span class="badge">Promoção</span>
+                            ${precoComDesconto != null
+                                ? `<span class="price-discounted">${UI.formatCurrency(precoComDesconto)}</span>
+                                   <span class="original-price">${UI.formatCurrency(precoCompra)}</span>
+                                   <span class="caption">20% de desconto na compra</span>`
+                                : `<span class="caption">Consulte valores de compra para este título</span>`}
+                        </div>
+                    </div>`;
 
-                promoGrid.innerHTML = leftHtml + rightHtml;
+                promoGrid.innerHTML = leftHtml + rightHtml + promoStrip;
             } catch (error) {
                 console.error('Erro ao carregar mais vendidos:', error);
             }
