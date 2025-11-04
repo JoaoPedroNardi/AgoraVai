@@ -425,6 +425,7 @@ const LivroModals = {
                                     <strong>${aval.cliente.nome}</strong>
                                     <div class="stars">${Utils.renderizarEstrelas(parseFloat(aval.nota))}</div>
                                 </div>
+                                <p style="margin:0.25rem 0 0.5rem;">${Utils.comentarioPorEstrelas(parseFloat(aval.nota), aval.comentario)}</p>
                                 <p style="color: #6b7280; font-size: 0.875rem;">${UI.formatDate(aval.dtAvaliacao)}</p>
                             </div>
                         `).join('')}

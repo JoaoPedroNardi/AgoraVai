@@ -97,6 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const homeSearchInput = document.getElementById('home-search-input');
         const homeSearchBtn = document.getElementById('home-search-btn');
         const homeCategorySelect = document.getElementById('home-category-select');
+        const loadMoreContainer = document.getElementById('home-load-more-container');
+        const loadMoreBtn = document.getElementById('home-load-more');
+        let homeCache = [];
+        let homeLimit = 10;
 
         function isValidHttpUrl(url) {
             if (!url || typeof url !== 'string') return false;
@@ -141,22 +145,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         ? await LivroAPI.buscarPorTitulo(q)
                         : await LivroAPI.listarTodos();
                 }
-                renderHomeBooks(livros);
+                homeCache = livros || [];
+                homeLimit = 10;
+                renderHomeBooks();
             } catch (error) {
                 console.error('Erro ao carregar livros da home:', error);
                 homeBookGrid.innerHTML = '<div class="subtext" style="padding: 2rem; text-align:center; color: var(--muted-foreground);">Erro ao carregar livros. Tente novamente mais tarde.</div>';
             }
         }
 
-        function renderHomeBooks(livros) {
+        function renderHomeBooks() {
             homeBookGrid.innerHTML = '';
-            if (!livros || livros.length === 0) {
+            if (!homeCache || homeCache.length === 0) {
                 homeBookGrid.innerHTML = '<div class="subtext" style="padding: 2rem; text-align:center; color: var(--muted-foreground);">Nenhum livro disponível</div>';
+                if (loadMoreContainer) loadMoreContainer.style.display = 'none';
                 return;
             }
-            const max = Math.min(livros.length, 10);
+            const max = Math.min(homeCache.length, homeLimit);
             for (let i = 0; i < max; i++) {
-                const livro = livros[i];
+                const livro = homeCache[i];
                 const precoHtml = (livro.vlCompra != null) ? `<span class="price">${UI.formatCurrency(livro.vlCompra)}</span>` : '';
                 const imgSrc = resolveCoverUrl(livro.capaUrl) || 'https://placehold.co/300x400/0a2342/ffffff?text=Livro';
                 const cardHtml = `
@@ -170,6 +177,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>`;
                 homeBookGrid.insertAdjacentHTML('beforeend', cardHtml);
+            }
+            if (loadMoreContainer) {
+                loadMoreContainer.style.display = (homeCache.length > homeLimit) ? '' : 'none';
             }
         }
 
@@ -193,6 +203,13 @@ document.addEventListener('DOMContentLoaded', () => {
             homeCategorySelect.addEventListener('change', () => {
                 const q = homeSearchInput ? homeSearchInput.value : '';
                 loadHomeBooks(q);
+            });
+        }
+
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', () => {
+                homeLimit += 10;
+                renderHomeBooks();
             });
         }
 

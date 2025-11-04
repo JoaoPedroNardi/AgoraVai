@@ -644,7 +644,7 @@ function renderizarAvaliacoes(tbody, avaliacoes) {
             </td>
             <td>${avaliacao.cliente.nome}</td>
             <td><div class="stars">${estrelas}</div></td>
-            <td class="comment" title="Avaliação do cliente">Muito bom!</td>
+            <td class="comment" title="Avaliação do cliente">${Utils.comentarioPorEstrelas(parseFloat(avaliacao.nota), avaliacao.comentario)}</td>
             <td><div class="subtext">${UI.formatDate(avaliacao.dtAvaliacao)}</div></td>
             <td>
                 <div class="action-buttons">

@@ -143,7 +143,7 @@
             <div class="rating">
               <span class="stars">${Utils.renderizarEstrelas(parseFloat(av.nota))}</span>
             </div>
-            <p class="review-text">${av.comentario || ''}</p>
+            <p class="review-text">${Utils.comentarioPorEstrelas(parseFloat(av.nota), av.comentario)}</p>
           </div>
         `).join('');
       } else {

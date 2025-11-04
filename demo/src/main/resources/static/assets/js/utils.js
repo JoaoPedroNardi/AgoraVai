@@ -141,6 +141,28 @@ const Utils = {
         }
         return html;
     },
+
+    /**
+     * Retorna comentário textual baseado na nota de 1 a 5.
+     * Se houver comentário do usuário, prioriza-o; caso contrário, usa o mapeamento.
+     * @param {number} nota
+     * @param {string} [comentario]
+     * @returns {string}
+     */
+    comentarioPorEstrelas(nota, comentario = '') {
+        const n = Math.round(Number(nota) || 0);
+        const mapa = {
+            0: 'Sem avaliação',
+            1: 'muito ruim',
+            2: 'ruim',
+            3: 'regular',
+            4: 'bom',
+            5: 'muito bom'
+        };
+        const auto = mapa[Math.max(0, Math.min(5, n))];
+        const texto = String(comentario || '').trim();
+        return texto.length > 0 ? texto : auto;
+    },
     
     /**
      * Formata iniciais do nome
