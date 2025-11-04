@@ -202,6 +202,124 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
+     * Promoções e Aluguel: destacar mais vendidos (compras + alugueis)
+     * Renderiza dinamicamente o destaque (1 livro) e os próximos 3
+     */
+    const promoGrid = document.querySelector('.promo-grid');
+    if (promoGrid) {
+        function isValidHttpUrlPromo(url) {
+            if (!url || typeof url !== 'string') return false;
+            try {
+                const u = new URL(url);
+                return u.protocol === 'http:' || u.protocol === 'https:';
+            } catch (e) { return false; }
+        }
+        function resolveCoverUrlPromo(url) {
+            if (!url) return null;
+            const raw = String(url).trim();
+            if (isValidHttpUrlPromo(raw)) return raw;
+            try {
+                if (raw.startsWith('/') || raw.startsWith('./') || /^[^:]+\//.test(raw)) {
+                    return new URL(raw, window.location.origin).href;
+                }
+            } catch(e) { return null; }
+            return null;
+        }
+
+        async function carregarMaisVendidos() {
+            // Tenta obter dados globais de compras; se não houver permissão, faz fallback para lista de livros
+            try {
+                let compras = [];
+                let podeListarCompras = false;
+                try {
+                    const user = (typeof Auth !== 'undefined' && Auth.getUser) ? Auth.getUser() : null;
+                    const role = user?.role;
+                    // Em ambientes com segurança, listar todas as compras geralmente exige ADMIN/FUNCIONARIO
+                    podeListarCompras = !!(role === 'ADMIN' || role === 'FUNCIONARIO');
+                } catch (_) { podeListarCompras = false; }
+
+                if (podeListarCompras) {
+                    compras = await CompraAPI.listarTodas();
+                } else {
+                    // Tentativa leve: alguns backends podem permitir por status sem 403; caso falhe, será capturado abaixo
+                    try {
+                        compras = await CompraAPI.buscarPorStatus('FINALIZADA');
+                    } catch (_) {
+                        compras = null;
+                    }
+                }
+
+                // Monta ranking por livro considerando compras + alugueis (qualquer compra não cancelada)
+                const ranking = new Map();
+                if (Array.isArray(compras)) {
+                    compras.forEach(c => {
+                        const st = String(c?.status || '').toUpperCase();
+                        if (st === 'CANCELADA') return;
+                        const livro = c?.livro;
+                        const id = livro?.idLivro;
+                        if (!id) return;
+                        const prev = ranking.get(id) || { count: 0, livro };
+                        prev.count += 1;
+                        prev.livro = livro || prev.livro;
+                        ranking.set(id, prev);
+                    });
+                }
+
+                let top = Array.from(ranking.values()).sort((a, b) => b.count - a.count).slice(0, 4);
+                let origem = 'compras/alugueis';
+                if (!top || top.length === 0) {
+                    // Fallback: usa lista de livros para preencher visualmente
+                    const livros = await LivroAPI.listarTodos().catch(() => []);
+                    top = (Array.isArray(livros) ? livros.slice(0, 4).map(l => ({ count: 0, livro: l })) : []);
+                    origem = 'catálogo';
+                }
+
+                if (!top || top.length === 0) return; // nada a renderizar
+
+                // Destaque: primeiro
+                const destaque = top[0]?.livro;
+                const destaqueImg = resolveCoverUrlPromo(destaque?.capaUrl) || 'https://placehold.co/300x400/0a2342/ffffff?text=Livro';
+                const precoHtml = (destaque?.vlCompra != null) ? `<span class="price">${UI.formatCurrency(destaque.vlCompra)}</span>` : '';
+                const aluguelHtml = (destaque?.vlAluguel != null) ? `<span class="original-price">${UI.formatCurrency(destaque.vlAluguel)}</span>` : '';
+                const leftHtml = `
+                    <div class="card book-card">
+                        <img src="${destaqueImg}" alt="${destaque?.titulo || 'Livro'}">
+                        <div class="content">
+                            <h3>${destaque?.titulo || 'Livro'}</h3>
+                            <p class="subtext">${destaque?.autor || ''}</p>
+                            <div class="price-info">${precoHtml}${aluguelHtml}</div>
+                            <a href="/pages/livro.html?id=${destaque?.idLivro}" class="btn btn-gold" style="width: 100%">Ver Mais</a>
+                        </div>
+                    </div>`;
+
+                // Próximos 3
+                const proximos3 = top.slice(1).map(x => x.livro);
+                let imagensHtml = '';
+                proximos3.forEach(l => {
+                    const img = resolveCoverUrlPromo(l?.capaUrl) || 'https://placehold.co/150x200/0a2342/ffffff?text=Livro';
+                    const alt = l?.titulo || 'Bestseller';
+                    imagensHtml += `<a href="/pages/livro.html?id=${l?.idLivro}" title="${alt}"><img src="${img}" alt="${alt}"></a>`;
+                });
+
+                const rightHtml = `
+                    <div class="card bestsellers-card">
+                        <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Os Livros Mais Vendidos</h3>
+                        <p class="subtext" style="margin-bottom: 1.5rem;">Baseado em ${origem}. Atualizado automaticamente.</p>
+                        <div class="bestsellers-images">
+                            ${imagensHtml || '<div class="subtext">Sem dados suficientes</div>'}
+                        </div>
+                        <a href="/pages/catalogo.html" class="btn btn-gold" style="width: 100%;">Ver Todos os Bestsellers</a>
+                    </div>`;
+
+                promoGrid.innerHTML = leftHtml + rightHtml;
+            } catch (error) {
+                console.error('Erro ao carregar mais vendidos:', error);
+            }
+        }
+
+        carregarMaisVendidos();
+    }
+    /**
      * Funcionalidade de Busca (para home-logado.html)
      */
     const searchInput = document.getElementById('search-input');
