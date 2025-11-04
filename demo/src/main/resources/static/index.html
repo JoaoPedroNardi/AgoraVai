@@ -62,26 +62,7 @@
         <div class="carousel-dots" id="carousel-dots"></div>
     </section>
 
-    <!-- FEATURED SECTION -->
-    <section class="featured-section">
-    <div class="container">
-        <div class="featured-grid">
-            <div class="featured-text">
-                <h2 class="section-title">Acervo em Destaque</h2>
-                <p class="section-subtitle">
-                    Explore nossa coleção especial de obras selecionadas por especialistas. Livros que marcaram época e continuam a inspirar gerações de leitores ao redor do mundo.
-                </p>
-                <p class="section-subtitle" style="margin-top: 1rem;">
-                    Obras clássicas, contemporâneas e recomendações que não podem faltar em sua biblioteca pessoal.
-                </p>
-                <a href="#" class="btn btn-gold btn-lg" style="margin-top: 2rem;">Ver Coleção</a>
-            </div>
-            <div class="featured-image-wrapper">
-                <img src="https://placehold.co/600x450/554236/f5f0e8?text=Acervo+Especial" alt="Livros em destaque">
-            </div>
-        </div>
-    </div>
-    </section>
+    
 
     <section class="container">
         <div class="section-header">
@@ -90,6 +71,17 @@
         </div>
         <div class="actions" style="display:flex; gap:0.5rem; margin-bottom:1rem; align-items:center;">
             <input id="home-search-input" type="text" placeholder="Buscar por título..." class="search-input" style="flex:1;">
+            <select id="home-category-select" class="select-input" style="min-width: 200px;">
+                <option value="">Categoria: Todas</option>
+                <option value="Ficção">Ficção</option>
+                <option value="Romance">Romance</option>
+                <option value="Mistério">Mistério</option>
+                <option value="Biografias">Biografias</option>
+                <option value="História">História</option>
+                <option value="Ciência">Ciência</option>
+                <option value="Fantasia">Fantasia</option>
+                <option value="Terror">Terror</option>
+            </select>
             <button id="home-search-btn" class="btn btn-gold">Buscar</button>
         </div>
         <div class="book-grid"></div>
@@ -122,19 +114,7 @@
                 </div>
             </div>
 
-            <div class="section-header" style="margin-top: 4rem;">
-                <h2 class="section-title">Categorias</h2>
-            </div>
-            <div class="category-pills">
-                <button class="btn active">Ficção</button>
-                <button class="btn">Romance</button>
-                <button class="btn">Mistério</button>
-                <button class="btn">Biografias</button>
-                <button class="btn">História</button>
-                <button class="btn">Ciência</button>
-                <button class="btn">Fantasia</button>
-                <button class="btn">Terror</button>
-            </div>
+            
         </div>
     </section>
 

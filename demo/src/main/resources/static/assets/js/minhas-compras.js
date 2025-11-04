@@ -22,6 +22,25 @@ document.addEventListener('DOMContentLoaded', () => {
     loadCompras(container, emptyState);
 });
 
+function isValidHttpUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    try {
+        const u = new URL(url);
+        return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch (e) { return false; }
+}
+function resolveCoverUrl(url) {
+    if (!url) return null;
+    const raw = String(url).trim();
+    if (isValidHttpUrl(raw)) return raw;
+    try {
+        if (raw.startsWith('/') || raw.startsWith('./') || /^[^:]+\//.test(raw)) {
+            return new URL(raw, window.location.origin).href;
+        }
+    } catch(e) { return null; }
+    return null;
+}
+
 async function loadCompras(container, emptyState) {
     try {
         // Endpoint protegido: /api/compras/minhas
@@ -72,6 +91,7 @@ function renderCompraCard(compra) {
     const livro = compra.livro || {};
     const titulo = livro.titulo || 'Livro';
     const autor = livro.autor ? `• ${livro.autor}` : '';
+    const capa = resolveCoverUrl(livro.capaUrl);
     const status = compra.status || 'PENDENTE';
     const tipoRaw = compra?.tipo ? String(compra.tipo).trim().toUpperCase() : null;
     const tipo = (tipoRaw === 'COMPRA' || tipoRaw === 'ALUGUEL')
@@ -99,12 +119,17 @@ function renderCompraCard(compra) {
     const aluguel = livro.vlAluguel != null ? `• Aluguel: R$ ${Number(livro.vlAluguel).toFixed(2)}` : '';
 
     return `
-        <div class="card">
-            <div class="card-title">${escapeHtml(titulo)} <span class="muted">${escapeHtml(autor)}</span></div>
-            <div class="muted">${isAluguel ? `Finalizada em: ${dtInicio}${diasRestantes > 0 ? ` • ${diasRestantes} dias restantes` : ''}` : `Início: ${dtInicio} • Fim: ${dtFim}`}</div>
-            <div class="muted">${preco} ${aluguel}</div>
-            <div style="margin-top:0.5rem;">
-                <span class="status ${escapeHtml(status)}">${escapeHtml(status)}</span>
+        <div class="card" style="display:flex;gap:1rem;align-items:flex-start;">
+            <div style="width:64px;height:96px;border-radius:8px;background:#0a234220;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+                ${capa ? `<img src="${capa}" alt="Capa de ${escapeHtml(titulo)}" style="width:100%;height:100%;object-fit:cover;"/>` : `<span style="color:#fff;font-weight:600;">${escapeHtml(titulo.substring(0,2).toUpperCase())}</span>`}
+            </div>
+            <div style="flex:1;">
+                <div class="card-title"><a href="/pages/livro.html?id=${livro.idLivro}" style="text-decoration:none;color:inherit;">${escapeHtml(titulo)}</a> <span class="muted">${escapeHtml(autor)}</span></div>
+                <div class="muted">${isAluguel ? `Finalizada em: ${dtInicio}${diasRestantes > 0 ? ` • ${diasRestantes} dias restantes` : ''}` : `Início: ${dtInicio} • Fim: ${dtFim}`}</div>
+                <div class="muted">${preco} ${aluguel}</div>
+                <div style="margin-top:0.5rem;">
+                    <span class="status ${escapeHtml(status)}">${escapeHtml(status)}</span>
+                </div>
             </div>
         </div>
     `;

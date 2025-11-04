@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (homeBookGrid) {
         const homeSearchInput = document.getElementById('home-search-input');
         const homeSearchBtn = document.getElementById('home-search-btn');
+        const homeCategorySelect = document.getElementById('home-category-select');
 
         function isValidHttpUrl(url) {
             if (!url || typeof url !== 'string') return false;
@@ -119,9 +120,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         async function loadHomeBooks(query = '') {
             try {
-                const livros = query && query.trim().length >= 2
-                    ? await LivroAPI.buscarPorTitulo(query.trim())
-                    : await LivroAPI.listarTodos();
+                const categoria = (homeCategorySelect && homeCategorySelect.value) ? homeCategorySelect.value : '';
+                let livros;
+
+                if (categoria) {
+                    // Busca por gênero na API quando categoria selecionada
+                    livros = await LivroAPI.buscarPorGenero(categoria);
+                    // Se houver texto de busca, filtra client-side por título/autor
+                    const q = (query || '').trim().toLowerCase();
+                    if (q.length >= 2) {
+                        livros = (livros || []).filter(l =>
+                            String(l.titulo || '').toLowerCase().includes(q) ||
+                            String(l.autor || '').toLowerCase().includes(q)
+                        );
+                    }
+                } else {
+                    // Sem categoria: usa título quando há query, senão lista todos
+                    const q = (query || '').trim();
+                    livros = q.length >= 2
+                        ? await LivroAPI.buscarPorTitulo(q)
+                        : await LivroAPI.listarTodos();
+                }
                 renderHomeBooks(livros);
             } catch (error) {
                 console.error('Erro ao carregar livros da home:', error);
@@ -168,6 +187,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (homeSearchBtn && homeSearchInput) {
             homeSearchBtn.addEventListener('click', () => {
                 loadHomeBooks(homeSearchInput.value);
+            });
+        }
+
+        if (homeCategorySelect) {
+            homeCategorySelect.addEventListener('change', () => {
+                const q = homeSearchInput ? homeSearchInput.value : '';
+                loadHomeBooks(q);
             });
         }
 

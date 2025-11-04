@@ -5,6 +5,26 @@
 const Carrinho = {
     items: [],
 
+    // Helpers para resolver URL da capa
+    isValidHttpUrl(url) {
+        if (!url || typeof url !== 'string') return false;
+        try {
+            const u = new URL(url);
+            return u.protocol === 'http:' || u.protocol === 'https:';
+        } catch (e) { return false; }
+    },
+    resolveCoverUrl(url) {
+        if (!url) return null;
+        const raw = String(url).trim();
+        if (this.isValidHttpUrl(raw)) return raw;
+        try {
+            if (raw.startsWith('/') || raw.startsWith('./') || /^[^:]+\//.test(raw)) {
+                return new URL(raw, window.location.origin).href;
+            }
+        } catch(e) { return null; }
+        return null;
+    },
+
     /**
      * Inicializa o carrinho
      */
@@ -12,6 +32,7 @@ const Carrinho = {
         this.carregarDoLocalStorage();
         this.renderizarBotao();
         this.criarModal();
+        this.criarModalPagamento();
         this.atualizarBadge();
     },
 
@@ -34,7 +55,8 @@ const Carrinho = {
             titulo: livro.titulo,
             autor: livro.autor,
             tipo: tipo,
-            preco: tipo === 'compra' ? livro.vlCompra : livro.vlAluguel
+            preco: tipo === 'compra' ? livro.vlCompra : livro.vlAluguel,
+            capaUrl: livro.capaUrl || null
         };
 
         this.items.push(item);
@@ -102,57 +124,8 @@ const Carrinho = {
         );
         return;
     }
-
-    const userId = Auth.getUserId();
-    const btnFinalizar = document.getElementById('btn-finalizar-compra');
-    
-    // Mostrar resumo antes de finalizar
-    const resumo = this.items.map(item => 
-        `${item.titulo} - ${item.tipo.toUpperCase()} (${UI.formatCurrency(item.preco)})`
-    ).join('\n');
-    
-    Modal.confirm(
-        'Confirmar Compra',
-        `Você está prestes a finalizar ${this.items.length} item(ns):\n\n${resumo}\n\nTotal: ${UI.formatCurrency(this.calcularTotal())}`,
-        async () => {
-            try {
-                Modal.showLoading('Processando compra...');
-
-                // Criar uma compra para cada item
-                for (const item of this.items) {
-                    const tipoUpper = item.tipo.toUpperCase();
-                    const compra = {
-                        cliente: { idPessoa: parseInt(userId) },
-                        livro: { idLivro: item.idLivro },
-                        // Status por tipo: COMPRA -> FINALIZADA, ALUGUEL -> PENDENTE
-                        status: tipoUpper === 'COMPRA' ? 'FINALIZADA' : 'PENDENTE',
-                        tipo: tipoUpper, // COMPRA ou ALUGUEL
-                        vlTotal: parseFloat(item.preco)
-                    };
-
-                    await CompraAPI.criar(compra);
-                }
-
-                Modal.hideLoading();
-                Modal.showSuccess(
-                    'modal-carrinho',
-                    'Compra realizada com sucesso!',
-                    () => {
-                        this.limpar();
-    window.location.href = '/pages/cliente.html';
-                    }
-                );
-
-            } catch (error) {
-                console.error('Erro ao finalizar compra:', error);
-                Modal.hideLoading();
-                Modal.showError(
-                    'Erro na Compra',
-                    error.message || 'Não foi possível finalizar a compra. Tente novamente.'
-                );
-            }
-        }
-    );
+    // Abre o modal de pagamento (apenas visual)
+    this.abrirPagamento();
 },
 
     /**
@@ -211,6 +184,150 @@ const Carrinho = {
     },
 
     /**
+     * Cria modal de pagamento (visual)
+     */
+    criarModalPagamento() {
+        const conteudo = `
+            <div class="payment-content" style="display:flex;flex-direction:column;gap:1rem;">
+                <div class="payment-summary" id="payment-summary">
+                    <!-- Resumo será preenchido dinamicamente -->
+                </div>
+                <div class="payment-methods">
+                    <label class="muted">Método de Pagamento</label>
+                    <div class="method-list" style="display:grid;gap:0.5rem;">
+                        <label class="radio">
+                            <input type="radio" name="metodo-pagamento" value="pix" checked>
+                            <span>Pix</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="metodo-pagamento" value="cartao">
+                            <span>Cartão de Crédito</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="metodo-pagamento" value="boleto">
+                            <span>Boleto</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="payment-card" id="payment-card" style="display:none;">
+                    <label class="muted">Dados do Cartão (visual)</label>
+                    <div style="display:grid;grid-template-columns:1fr;gap:0.5rem;">
+                        <input type="text" placeholder="Número do cartão" disabled>
+                        <input type="text" placeholder="Nome impresso" disabled>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+                            <input type="text" placeholder="Validade" disabled>
+                            <input type="text" placeholder="CVV" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const rodape = `
+            <button type="button" class="btn btn-outline" data-action="close">Cancelar</button>
+            <button type="button" class="btn btn-gold" id="btn-confirmar-pagamento">
+                <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right:0.5rem;">
+                    <polyline points="20 6 9 17 4 12" stroke="currentColor" fill="none" stroke-width="2"/>
+                </svg>
+                Confirmar Pagamento
+            </button>
+        `;
+
+        Modal.create('modal-pagamento', 'Pagamento', conteudo, rodape);
+
+        // Listeners internos
+        const container = document.getElementById('modal-pagamento');
+        if (container) {
+            container.addEventListener('change', (e) => {
+                const radio = e.target.closest('input[type="radio"][name="metodo-pagamento"]');
+                if (!radio) return;
+                const cartaoBox = document.getElementById('payment-card');
+                if (cartaoBox) {
+                    cartaoBox.style.display = radio.value === 'cartao' ? 'block' : 'none';
+                }
+            });
+        }
+
+        const btnConfirmar = document.getElementById('btn-confirmar-pagamento');
+        if (btnConfirmar) {
+            btnConfirmar.addEventListener('click', () => {
+                const metodo = (document.querySelector('input[name="metodo-pagamento"]:checked')?.value) || 'pix';
+                this.realizarCheckout(metodo);
+            });
+        }
+    },
+
+    /**
+     * Abre modal de pagamento preenchendo resumo
+     */
+    abrirPagamento() {
+        const resumoEl = document.getElementById('payment-summary');
+        if (resumoEl) {
+            const linhas = this.items.map(item => `
+                <div style="display:flex;justify-content:space-between;gap:0.5rem;">
+                    <span>${item.titulo} <span class="muted">• ${item.tipo.toUpperCase()}</span></span>
+                    <span>${UI.formatCurrency(item.preco)}</span>
+                </div>
+            `).join('');
+            resumoEl.innerHTML = `
+                <div class="card" style="padding:1rem;">
+                    <div class="card-title">Resumo do Pedido</div>
+                    <div style="display:grid;gap:0.25rem;">${linhas}</div>
+                    <div style="display:flex;justify-content:space-between;margin-top:0.75rem;font-weight:600;">
+                        <span>Total</span>
+                        <span>${UI.formatCurrency(this.calcularTotal())}</span>
+                    </div>
+                </div>
+            `;
+        }
+        // Reset método para Pix
+        const pixRadio = document.querySelector('input[name="metodo-pagamento"][value="pix"]');
+        if (pixRadio) pixRadio.checked = true;
+        const cartaoBox = document.getElementById('payment-card');
+        if (cartaoBox) cartaoBox.style.display = 'none';
+        Modal.open('modal-pagamento');
+    },
+
+    /**
+     * Realiza checkout com base no método selecionado (visual)
+     */
+    async realizarCheckout(metodo) {
+        try {
+            const userId = Auth.getUserId();
+            Modal.showLoading('Processando pagamento...');
+
+            for (const item of this.items) {
+                const tipoUpper = item.tipo.toUpperCase();
+                const compra = {
+                    cliente: { idPessoa: parseInt(userId) },
+                    livro: { idLivro: item.idLivro },
+                    status: tipoUpper === 'COMPRA' ? 'FINALIZADA' : 'PENDENTE',
+                    tipo: tipoUpper,
+                    vlTotal: parseFloat(item.preco)
+                };
+                await CompraAPI.criar(compra);
+            }
+
+            Modal.hideLoading();
+            Modal.showSuccess(
+                'modal-pagamento',
+                `Pagamento (${metodo.toUpperCase()}) confirmado!`,
+                () => {
+                    this.limpar();
+                    window.location.href = '/pages/cliente.html';
+                }
+            );
+        } catch (error) {
+            console.error('Erro ao finalizar compra:', error);
+            Modal.hideLoading();
+            Modal.showError(
+                'Erro no Pagamento',
+                error.message || 'Não foi possível concluir o pagamento. Tente novamente.'
+            );
+        }
+    },
+
+    /**
      * Renderiza itens do carrinho
      */
     renderizarItens() {
@@ -234,9 +351,12 @@ const Carrinho = {
         let html = '';
         this.items.forEach(item => {
             const iniciais = item.titulo.substring(0, 2).toUpperCase();
+            const cover = this.resolveCoverUrl(item.capaUrl);
             html += `
                 <div class="cart-item">
-                    <div class="cart-item-image">${iniciais}</div>
+                    <div class="cart-item-image">
+                        ${cover ? `<img src="${cover}" alt="Capa de ${item.titulo}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;"/>` : `${iniciais}`}
+                    </div>
                     <div class="cart-item-details">
                         <div class="cart-item-title">${item.titulo}</div>
                         <div class="cart-item-author">${item.autor}</div>

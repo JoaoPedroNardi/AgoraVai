@@ -71,6 +71,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
+// Helpers para resolver URL da capa
+function isValidHttpUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    try {
+        const u = new URL(url);
+        return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch (e) { return false; }
+}
+function resolveCoverUrl(url) {
+    if (!url) return null;
+    const raw = String(url).trim();
+    if (isValidHttpUrl(raw)) return raw;
+    try {
+        if (raw.startsWith('/') || raw.startsWith('./') || /^[^:]+\//.test(raw)) {
+            return new URL(raw, window.location.origin).href;
+        }
+    } catch(e) { return null; }
+    return null;
+}
+
 async function carregarDadosCliente(userId) {
     try {
         const cliente = await ClienteAPI.buscarPorId(userId);
@@ -163,9 +183,9 @@ async function carregarEmprestimos(userId) {
                 item.className = 'loan-item';
                 item.innerHTML = `
                     <div class="loan-details">
-                        <div class="loan-cover">${livroInicial}</div>
+                        <div class="loan-cover">${(() => { const c = resolveCoverUrl(compra.livro.capaUrl); return c ? `<img src="${c}" alt="Capa de ${compra.livro.titulo}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;"/>` : livroInicial; })()}</div>
                         <div>
-                            <h3 class="loan-title">${compra.livro.titulo}</h3>
+                            <h3 class="loan-title"><a href="/pages/livro.html?id=${compra.livro.idLivro}" style="text-decoration:none;color:inherit;">${compra.livro.titulo}</a></h3>
                             <p class="subtext">${compra.livro.autor}</p>
                             <div class="loan-date">
                                 <svg width="14" height="14" viewBox="0 0 24 24">
