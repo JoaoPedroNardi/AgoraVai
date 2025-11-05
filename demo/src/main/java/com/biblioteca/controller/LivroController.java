@@ -31,6 +31,9 @@ public class LivroController {
     @Autowired
     private LivroService livroService;
     
+    /**
+     * Lista todos os livros.
+     */
     @GetMapping
     public ResponseEntity<List<LivroDTO>> listarTodos() {
         List<LivroDTO> dtos = livroService.listarTodos().stream()
@@ -39,6 +42,9 @@ public class LivroController {
         return ResponseEntity.ok(dtos);
     }
     
+    /**
+     * Busca livro por ID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<LivroDTO> buscarPorId(@PathVariable Long id) {
         return livroService.buscarPorId(id)
@@ -46,6 +52,9 @@ public class LivroController {
             .orElse(ResponseEntity.notFound().build());
     }
     
+    /**
+     * Busca livros por título (contém, case-insensitive).
+     */
     @GetMapping("/buscar/titulo")
     public ResponseEntity<List<LivroDTO>> buscarPorTitulo(@RequestParam String titulo) {
         List<LivroDTO> dtos = livroService.buscarPorTitulo(titulo).stream()
@@ -54,6 +63,9 @@ public class LivroController {
         return ResponseEntity.ok(dtos);
     }
     
+    /**
+     * Busca livros por autor (contém, case-insensitive).
+     */
     @GetMapping("/buscar/autor")
     public ResponseEntity<List<LivroDTO>> buscarPorAutor(@RequestParam String autor) {
         List<LivroDTO> dtos = livroService.buscarPorAutor(autor).stream()
@@ -62,6 +74,9 @@ public class LivroController {
         return ResponseEntity.ok(dtos);
     }
     
+    /**
+     * Busca livros por gênero exato.
+     */
     @GetMapping("/buscar/genero")
     public ResponseEntity<List<LivroDTO>> buscarPorGenero(@RequestParam String genero) {
         List<LivroDTO> dtos = livroService.buscarPorGenero(genero).stream()
@@ -71,18 +86,27 @@ public class LivroController {
     }
     
     
+    /**
+     * Cria um novo livro.
+     */
     @PostMapping
     public ResponseEntity<LivroDTO> criar(@Valid @RequestBody Livro livro) {
         Livro livroSalvo = livroService.criar(livro);
         return ResponseEntity.status(HttpStatus.CREATED).body(DtoMapper.toLivroDTO(livroSalvo));
     }
     
+    /**
+     * Atualiza informações do livro.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<LivroDTO> atualizar(@PathVariable Long id, @Valid @RequestBody Livro livro) {
         Livro livroAtualizado = livroService.atualizar(id, livro);
         return ResponseEntity.ok(DtoMapper.toLivroDTO(livroAtualizado));
     }
     
+    /**
+     * Exclui um livro.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         livroService.deletar(id);

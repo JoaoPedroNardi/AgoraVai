@@ -28,11 +28,17 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
     
+    /**
+     * Lista todos os administradores.
+     */
     @GetMapping
     public ResponseEntity<List<Admin>> listarTodos() {
         return ResponseEntity.ok(adminService.listarTodos());
     }
     
+    /**
+     * Busca administrador por ID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Admin> buscarPorId(@PathVariable Long id) {
         return adminService.buscarPorId(id)
@@ -40,18 +46,27 @@ public class AdminController {
             .orElse(ResponseEntity.notFound().build());
     }
     
+    /**
+     * Cria um novo administrador.
+     */
     @PostMapping
     public ResponseEntity<Admin> criar(@Valid @RequestBody Admin admin) {
         Admin adminSalvo = adminService.criar(admin);
         return ResponseEntity.status(HttpStatus.CREATED).body(adminSalvo);
     }
     
+    /**
+     * Atualiza dados do administrador.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Admin> atualizar(@PathVariable Long id, @Valid @RequestBody Admin admin) {
         Admin adminAtualizado = adminService.atualizar(id, admin);
         return ResponseEntity.ok(adminAtualizado);
     }
     
+    /**
+     * Exclui um administrador.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         adminService.deletar(id);

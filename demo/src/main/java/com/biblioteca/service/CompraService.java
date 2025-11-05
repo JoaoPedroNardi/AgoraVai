@@ -30,24 +30,42 @@ public class CompraService {
     @Autowired
     private LivroRepository livroRepository;
     
+    /**
+     * Lista todas as compras/aluguéis registradas no sistema.
+     */
     public List<Compra> listarTodas() {
         return compraRepository.findAll();
     }
     
+    /**
+     * Busca uma compra pelo seu identificador.
+     */
     public Optional<Compra> buscarPorId(Long id) {
         return compraRepository.findById(id);
     }
     
+    /**
+     * Lista compras/aluguéis de um cliente específico.
+     */
     public List<Compra> buscarPorCliente(Long clienteId) {
         Cliente cliente = clienteRepository.findById(clienteId)
             .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
         return compraRepository.findByCliente(cliente);
     }
     
+    /**
+     * Lista compras por status (ex.: PENDENTE, EM_ANDAMENTO, FINALIZADA, CANCELADA).
+     */
     public List<Compra> buscarPorStatus(String status) {
         return compraRepository.findByStatus(status);
     }
     
+    /**
+     * Cria uma compra/aluguel ajustando tipo, status e datas conforme regras:
+     * - Define dtInicio quando ausente
+     * - Infere tipo (COMPRA/ALUGUEL) com base no livro
+     * - Normaliza status de acordo com o tipo
+     */
     public Compra criar(Compra compra) {
         Cliente cliente = clienteRepository.findById(compra.getCliente().getIdPessoa())
             .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
@@ -96,6 +114,9 @@ public class CompraService {
         return compraRepository.save(compra);
     }
     
+    /**
+     * Atualiza o status da compra obedecendo transições válidas.
+     */
     public Compra atualizarStatus(Long id, String novoStatus) {
         Compra compra = compraRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Compra não encontrada"));
@@ -128,6 +149,9 @@ public class CompraService {
         return compraRepository.save(compra);
     }
     
+    /**
+     * Finaliza a compra: para ALUGUEL, calcula dtFim; para COMPRA, define dtFim atual.
+     */
     public Compra finalizarCompra(Long id) {
         Compra compra = compraRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Compra não encontrada"));
@@ -147,6 +171,9 @@ public class CompraService {
         return compraRepository.save(compra);
     }
 
+    /**
+     * Renova um aluguel adicionando dias ao prazo de dtFim.
+     */
     public Compra renovarCompra(Long id, int dias) {
         if (dias <= 0) dias = 15;
         Compra compra = compraRepository.findById(id)
@@ -176,6 +203,9 @@ public class CompraService {
         return compraRepository.save(compra);
     }
     
+    /**
+     * Exclui a compra por ID.
+     */
     public void deletar(Long id) {
         Compra compra = compraRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Compra não encontrada"));

@@ -12,6 +12,13 @@ import com.biblioteca.model.Cliente;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
+    /**
+     * Busca cliente por CPF (único).
+     */
     Optional<Cliente> findByCpf(String cpf);
+
+    /**
+     * Busca cliente por email (único).
+     */
     Optional<Cliente> findByEmail(String email);
 }

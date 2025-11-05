@@ -25,32 +25,53 @@ public class LivroService {
     @Autowired
     private com.biblioteca.repository.AvaliacaoRepository avaliacaoRepository;
     
+    /**
+     * Lista todos os livros sem filtros.
+     */
     public List<Livro> listarTodos() {
         return livroRepository.findAll();
     }
     
+    /**
+     * Busca livro por ID.
+     */
     public Optional<Livro> buscarPorId(Long id) {
         return livroRepository.findById(id);
     }
     
+    /**
+     * Busca livros pelo título (contém, case-insensitive).
+     */
     public List<Livro> buscarPorTitulo(String titulo) {
         return livroRepository.findByTituloContainingIgnoreCase(titulo);
     }
     
+    /**
+     * Busca livros pelo autor (contém, case-insensitive).
+     */
     public List<Livro> buscarPorAutor(String autor) {
         return livroRepository.findByAutorContainingIgnoreCase(autor);
     }
     
+    /**
+     * Busca livros por gênero exato.
+     */
     public List<Livro> buscarPorGenero(String genero) {
         return livroRepository.findByGenero(genero);
     }
     
     
+    /**
+     * Cria um novo livro após validações de negócio.
+     */
     public Livro criar(Livro livro) {
         validarLivro(livro);
         return livroRepository.save(livro);
     }
     
+    /**
+     * Atualiza campos do livro de forma segura, sem sobrescrever com valores vazios.
+     */
     public Livro atualizar(Long id, Livro livro) {
         Livro livroExistente = livroRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Livro não encontrado com ID: " + id));
@@ -92,6 +113,9 @@ public class LivroService {
         return livroRepository.save(livroExistente);
     }
     
+    /**
+     * Exclui livro garantindo que não existam compras ou avaliações associadas.
+     */
     public void deletar(Long id) {
         Livro livro = livroRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Livro não encontrado com ID: " + id));
@@ -114,6 +138,9 @@ public class LivroService {
         livroRepository.delete(livro);
     }
     
+    /**
+     * Valida campos obrigatórios do livro.
+     */
     private void validarLivro(Livro livro) {
         if (livro.getTitulo() == null || livro.getTitulo().trim().isEmpty()) {
             throw new BusinessException("Título é obrigatório");

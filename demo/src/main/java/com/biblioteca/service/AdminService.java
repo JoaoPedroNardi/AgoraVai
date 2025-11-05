@@ -19,14 +19,23 @@ public class AdminService {
     @Autowired
     private AdminRepository adminRepository;
     
+    /**
+     * Lista todos os administradores.
+     */
     public List<Admin> listarTodos() {
         return adminRepository.findAll();
     }
     
+    /**
+     * Busca administrador por ID.
+     */
     public Optional<Admin> buscarPorId(Long id) {
         return adminRepository.findById(id);
     }
     
+    /**
+     * Cria administrador com validação e sincroniza idAdmin com idPessoa.
+     */
     public Admin criar(Admin admin) {
         validarAdmin(admin);
         Admin salvo = adminRepository.save(admin);
@@ -37,6 +46,9 @@ public class AdminService {
         return salvo;
     }
     
+    /**
+     * Atualiza dados cadastrais do administrador.
+     */
     public Admin atualizar(Long id, Admin admin) {
         Admin adminExistente = adminRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Admin não encontrado com ID: " + id));
@@ -51,6 +63,9 @@ public class AdminService {
         return adminRepository.save(adminExistente);
     }
     
+    /**
+     * Exclui administrador por ID.
+     */
     public void deletar(Long id) {
         if (!adminRepository.existsById(id)) {
             throw new ResourceNotFoundException("Admin não encontrado com ID: " + id);
@@ -58,6 +73,9 @@ public class AdminService {
         adminRepository.deleteById(id);
     }
     
+    /**
+     * Valida campos obrigatórios do administrador.
+     */
     private void validarAdmin(Admin admin) {
         if (admin.getNome() == null || admin.getNome().trim().isEmpty()) {
             throw new BusinessException("Nome é obrigatório");

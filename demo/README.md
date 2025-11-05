@@ -1,0 +1,80 @@
+# Bibliotech API — Documentação do Projeto
+
+Este projeto é uma API de biblioteca construída com Spring Boot, usando JPA/Hibernate para persistência, validações com Jakarta Validation, autenticação via JWT e tratamento global de erros. Os endpoints seguem uma organização por domínio (livros, compras/aluguéis, clientes, avaliações, funcionários e admins).
+
+## Visão Geral
+- `controller`: expõe endpoints REST e converte entidades em DTOs.
+- `service`: concentra regras de negócio e validações.
+- `repository`: interfaces JPA para acesso ao banco com consultas derivadas.
+- `model`: entidades JPA e enums do domínio.
+- `security`: utilitários de JWT e filtro de autenticação.
+- `config`: configurações de CORS, segurança e carga inicial de dados.
+- `exception`: exceções de domínio e handler global.
+- `dto` e `mapper`: objetos de transferência e conversor central.
+
+## Estrutura de Pastas
+- `src/main/java/com/biblioteca/config`
+  - `SecurityConfig.java`: configura autenticação/autorização, filtros e regras de acesso.
+  - `CorsConfig.java`: habilita CORS para origens configuradas em `application.properties`.
+  - `DataSeeder.java`: popula dados iniciais (se aplicável).
+- `src/main/java/com/biblioteca/controller`
+  - `LivroController.java`: CRUD de livros e buscas (título, autor, gênero).
+  - `CompraController.java`: CRUD e operações de compras/aluguéis, mudança de status.
+  - `ClienteController.java`: CRUD de clientes e buscas.
+  - `AvaliacaoController.java`: CRUD de avaliações e listagens por cliente/livro.
+  - `FuncionarioController.java`: CRUD de funcionários.
+  - `AdminController.java`: CRUD de administradores.
+  - `AuthController.java`: login, registro e verificação de autenticação.
+- `src/main/java/com/biblioteca/service`
+  - `LivroService.java`: regras para criação/atualização, validações de livro.
+  - `CompraService.java`: regras de compra/aluguel, prevenção de duplicidades, transições de status.
+  - `ClienteService.java`: validações de CPF/email, cadastro e atualização.
+  - `AvaliacaoService.java`: validações (só avalia quem comprou/alugou), cálculo de média.
+  - `FuncionarioService.java`: regras e validações de funcionário.
+  - `AdminService.java`: regras e validações de admin.
+  - `AuthService.java`: autenticação, criptografia de senha e geração de JWT.
+- `src/main/java/com/biblioteca/repository`
+  - `LivroRepository.java`: consultas por título/autor (case-insensitive) e gênero.
+  - `CompraRepository.java`: por cliente, por status, existência de ativo, contagem por livro.
+  - `ClienteRepository.java`: busca por CPF e email.
+  - `AvaliacaoRepository.java`: por livro, por cliente e contagem por livro.
+  - `FuncionarioRepository.java`: busca por email.
+  - `AdminRepository.java`: busca por email.
+  - `UserRepository.java`: suporte à autenticação (se usado pelo `AuthService`).
+- `src/main/java/com/biblioteca/model`
+  - `Livro`, `Cliente`, `Funcionario`, `Admin`, `Avaliacao`, `Compra`, `Pessoa`, `User`: entidades JPA.
+  - `TipoCompra.java`: enum com tipos (ex.: COMPRA, ALUGUEL).
+- `src/main/java/com/biblioteca/security`
+  - `JwtUtil.java`: gera e valida tokens JWT.
+  - `JwtAuthenticationFilter.java`: extrai e valida JWT nas requisições.
+- `src/main/java/com/biblioteca/exception`
+  - `GlobalExceptionHandler.java`: traduz exceções em respostas HTTP consistentes.
+  - `BusinessException.java`, `ResourceNotFoundException.java`, `ErrorResponse.java`: suporte a erros de domínio.
+- `src/main/java/com/biblioteca/dto`
+  - `LivroDTO`, `CompraDTO`, `ClienteDTO`, `AvaliacaoDTO`, `LoginRequest`, `LoginResponse`.
+- `src/main/java/com/biblioteca/mapper`
+  - `DtoMapper.java`: conversões entre entidades e DTOs.
+- `src/main/resources`
+  - `application.properties`: configuração de datasource, JPA, JWT, CORS e estáticos.
+
+## Interação entre Camadas
+- Controllers chamam Services e retornam DTOs; não possuem lógica de negócio.
+- Services validam regras (ex.: impedir aluguel/compra duplicada ativa, calcular média de avaliações), consultam Repositories e disparam exceções de domínio quando necessário.
+- Repositories usam consultas derivadas do Spring Data JPA para filtrar por atributos.
+- Security configura autenticação com JWT; o filtro valida o token em endpoints protegidos.
+
+## Regras de Negócio (Resumo)
+- Compras/Aluguéis:
+  - Impede duplicidade de compra/aluguel ativo por cliente/livro usando `existsByClienteAndLivroAndStatusNot`.
+  - Transições de status controladas (ex.: cancelamento, conclusão), validadas no `CompraService`.
+- Avaliações:
+  - Somente clientes que compraram/alugaram podem avaliar um livro.
+  - Média de avaliações atualizada no `LivroService`/`AvaliacaoService` após operações.
+
+## Execução
+- Rodar localmente: `./mvnw spring-boot:run` (Windows: `mvnw.cmd spring-boot:run`).
+- Porta padrão: `8080` (configurável em `application.properties`).
+
+## Observações
+- Comentários explicativos foram adicionados em Services, Controllers e Repositories para facilitar manutenção e onboarding.
+- Para documentação de endpoints, consulte os comentários nos Controllers.

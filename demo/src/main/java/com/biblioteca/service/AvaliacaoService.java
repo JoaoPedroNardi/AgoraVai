@@ -34,26 +34,41 @@ public class AvaliacaoService {
     @Autowired
     private CompraRepository compraRepository;
     
+    /**
+     * Lista todas as avaliações registradas.
+     */
     public List<Avaliacao> listarTodas() {
         return avaliacaoRepository.findAll();
     }
     
+    /**
+     * Busca uma avaliação por ID.
+     */
     public Optional<Avaliacao> buscarPorId(Long id) {
         return avaliacaoRepository.findById(id);
     }
     
+    /**
+     * Lista avaliações de um livro específico.
+     */
     public List<Avaliacao> buscarPorLivro(Long livroId) {
         Livro livro = livroRepository.findById(livroId)
             .orElseThrow(() -> new ResourceNotFoundException("Livro não encontrado"));
         return avaliacaoRepository.findByLivro(livro);
     }
     
+    /**
+     * Lista avaliações feitas por um cliente.
+     */
     public List<Avaliacao> buscarPorCliente(Long clienteId) {
         Cliente cliente = clienteRepository.findById(clienteId)
             .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
         return avaliacaoRepository.findByCliente(cliente);
     }
     
+    /**
+     * Cria uma avaliação verificando elegibilidade (compra/aluguel não cancelada) e atualiza a média do livro.
+     */
     public Avaliacao criar(Avaliacao avaliacao) {
         validarAvaliacao(avaliacao);
         
@@ -96,6 +111,9 @@ public class AvaliacaoService {
         return avaliacaoAtualizada;
     }
     
+    /**
+     * Exclui uma avaliação e recalcula a média do livro.
+     */
     public void deletar(Long id) {
         Avaliacao avaliacao = avaliacaoRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Avaliação não encontrada"));
@@ -113,6 +131,9 @@ public class AvaliacaoService {
         }
     }
     
+    /**
+     * Recalcula e atualiza a média de avaliações do livro.
+     */
     private void atualizarMediaAvaliacoes(Long livroId) {
         Livro livro = livroRepository.findById(livroId)
             .orElseThrow(() -> new ResourceNotFoundException("Livro não encontrado"));

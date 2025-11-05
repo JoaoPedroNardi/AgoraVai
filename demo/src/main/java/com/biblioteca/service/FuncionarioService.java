@@ -19,14 +19,23 @@ public class FuncionarioService {
     @Autowired
     private FuncionarioRepository funcionarioRepository;
     
+    /**
+     * Lista todos os funcionários.
+     */
     public List<Funcionario> listarTodos() {
         return funcionarioRepository.findAll();
     }
     
+    /**
+     * Busca funcionário por ID.
+     */
     public Optional<Funcionario> buscarPorId(Long id) {
         return funcionarioRepository.findById(id);
     }
     
+    /**
+     * Cria um funcionário com validação e sincroniza idFuncionario com idPessoa.
+     */
     public Funcionario criar(Funcionario funcionario) {
         validarFuncionario(funcionario);
         Funcionario salvo = funcionarioRepository.save(funcionario);
@@ -37,6 +46,9 @@ public class FuncionarioService {
         return salvo;
     }
     
+    /**
+     * Atualiza dados cadastrais do funcionário.
+     */
     public Funcionario atualizar(Long id, Funcionario funcionario) {
         Funcionario funcionarioExistente = funcionarioRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Funcionário não encontrado com ID: " + id));
@@ -51,6 +63,9 @@ public class FuncionarioService {
         return funcionarioRepository.save(funcionarioExistente);
     }
     
+    /**
+     * Exclui funcionário por ID.
+     */
     public void deletar(Long id) {
         if (!funcionarioRepository.existsById(id)) {
             throw new ResourceNotFoundException("Funcionário não encontrado com ID: " + id);
@@ -58,6 +73,9 @@ public class FuncionarioService {
         funcionarioRepository.deleteById(id);
     }
     
+    /**
+     * Valida campos obrigatórios do funcionário.
+     */
     private void validarFuncionario(Funcionario funcionario) {
         if (funcionario.getNome() == null || funcionario.getNome().trim().isEmpty()) {
             throw new BusinessException("Nome é obrigatório");

@@ -32,6 +32,9 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
     
+    /**
+     * Lista todos os clientes.
+     */
     @GetMapping
     public ResponseEntity<List<ClienteDTO>> listarTodos() {
         List<ClienteDTO> dtos = clienteService.listarTodos().stream()
@@ -40,6 +43,9 @@ public class ClienteController {
         return ResponseEntity.ok(dtos);
     }
     
+    /**
+     * Busca cliente por ID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ClienteDTO> buscarPorId(@PathVariable Long id) {
         return clienteService.buscarPorId(id)
@@ -47,6 +53,9 @@ public class ClienteController {
             .orElse(ResponseEntity.notFound().build());
     }
     
+    /**
+     * Busca cliente por CPF.
+     */
     @GetMapping("/cpf/{cpf}")
     public ResponseEntity<ClienteDTO> buscarPorCpf(@PathVariable String cpf) {
         return clienteService.buscarPorCpf(cpf)
@@ -54,6 +63,9 @@ public class ClienteController {
             .orElse(ResponseEntity.notFound().build());
     }
     
+    /**
+     * Busca cliente por email.
+     */
     @GetMapping("/email/{email}")
     public ResponseEntity<ClienteDTO> buscarPorEmail(@PathVariable String email) {
         return clienteService.buscarPorEmail(email)
@@ -63,18 +75,27 @@ public class ClienteController {
     
     // Endpoint de login removido; usar /api/auth/login
     
+    /**
+     * Cria um novo cliente.
+     */
     @PostMapping
     public ResponseEntity<ClienteDTO> criar(@Valid @RequestBody Cliente cliente) {
         Cliente clienteSalvo = clienteService.criar(cliente);
         return ResponseEntity.status(HttpStatus.CREATED).body(DtoMapper.toClienteDTO(clienteSalvo));
     }
     
+    /**
+     * Atualiza dados do cliente.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<ClienteDTO> atualizar(@PathVariable Long id, @Valid @RequestBody Cliente cliente) {
         Cliente clienteAtualizado = clienteService.atualizar(id, cliente);
         return ResponseEntity.ok(DtoMapper.toClienteDTO(clienteAtualizado));
     }
     
+    /**
+     * Exclui um cliente.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         clienteService.deletar(id);

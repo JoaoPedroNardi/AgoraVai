@@ -25,27 +25,49 @@ public class ClienteService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+    /**
+     * Lista todos os clientes do sistema.
+     * Não aplica filtros adicionais; retorna todos os registros.
+     */
     public List<Cliente> listarTodos() {
         // Retornar todos os clientes, independentemente do campo 'ativo'
         return clienteRepository.findAll();
     }
     
+    /**
+     * Busca um cliente pelo identificador da pessoa/cliente.
+     * @param id ID da pessoa (chave da herança JOINED)
+     */
     public Optional<Cliente> buscarPorId(Long id) {
         return clienteRepository.findById(id);
     }
     
+    /**
+     * Mantido por compatibilidade: delega para {@link #criar(Cliente)}.
+     */
     public Cliente criarCliente(Cliente cliente) {
         return criar(cliente);
     }
     
+    /**
+     * Busca cliente por CPF.
+     * @param cpf documento no formato 11 ou 14 dígitos
+     */
     public Optional<Cliente> buscarPorCpf(String cpf) {
         return clienteRepository.findByCpf(cpf);
     }
     
+    /**
+     * Busca cliente por email (case-insensitive na criação/atualização).
+     */
     public Optional<Cliente> buscarPorEmail(String email) {
         return clienteRepository.findByEmail(email);
     }
     
+    /**
+     * Autentica um cliente verificando o hash da senha.
+     * @return cliente autenticado quando credenciais válidas, senão vazio
+     */
     public Optional<Cliente> autenticar(String email, String senha) {
         Optional<Cliente> clienteOpt = clienteRepository.findByEmail(email);
         if (clienteOpt.isPresent()) {
@@ -57,6 +79,13 @@ public class ClienteService {
         return Optional.empty();
     }
     
+    /**
+     * Cria um novo cliente com validações de negócio, normalização e criptografia de senha.
+     * - Normaliza email para minúsculo
+     * - Define dtCadastro quando ausente
+     * - Criptografa senha quando fornecida e não criptografada
+     * - Verifica duplicidade de CPF e email
+     */
     public Cliente criar(Cliente cliente) {
         // Normalizar email (minúsculo) e gênero (nulo se vazio)
         if (cliente.getEmail() != null) {
@@ -88,6 +117,12 @@ public class ClienteService {
         return salvo;
     }
     
+    /**
+     * Atualiza dados do cliente, com normalização e validações.
+     * - Garante unicidade de CPF e email
+     * - Exige gênero não vazio
+     * - Reaplica criptografia de senha quando alterada
+     */
     public Cliente atualizar(Long id, Cliente cliente) {
         Cliente clienteExistente = clienteRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com ID: " + id));
@@ -121,6 +156,9 @@ public class ClienteService {
         return clienteRepository.save(clienteExistente);
     }
     
+    /**
+     * Remove um cliente por ID.
+     */
     public void deletar(Long id) {
         Cliente cliente = clienteRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com ID: " + id));
@@ -129,6 +167,9 @@ public class ClienteService {
     
     // Método de ativação/desativação removido junto com empAtivo
     
+    /**
+     * Valida regras obrigatórias de dados do cliente.
+     */
     private void validarCliente(Cliente cliente) {
         if (cliente.getNome() == null || cliente.getNome().trim().isEmpty()) {
             throw new BusinessException("Nome é obrigatório");
@@ -144,6 +185,9 @@ public class ClienteService {
         }
     }
     
+    /**
+     * Verifica duplicidade de CPF opcionalmente ignorando um ID durante atualização.
+     */
     private void verificarCpfDuplicado(String cpf, Long idExcluir) {
         if (cpf == null || cpf.trim().isEmpty()) return;
         Optional<Cliente> clienteExistente = clienteRepository.findByCpf(cpf);
@@ -154,6 +198,9 @@ public class ClienteService {
         }
     }
     
+    /**
+     * Verifica duplicidade de email opcionalmente ignorando um ID durante atualização.
+     */
     private void verificarEmailDuplicado(String email, Long idExcluir) {
         Optional<Cliente> clienteExistente = clienteRepository.findByEmail(email);
         if (clienteExistente.isPresent()) {

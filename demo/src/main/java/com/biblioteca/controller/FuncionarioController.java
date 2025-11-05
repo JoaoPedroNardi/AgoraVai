@@ -28,11 +28,17 @@ public class FuncionarioController {
     @Autowired
     private FuncionarioService funcionarioService;
     
+    /**
+     * Lista todos os funcionários.
+     */
     @GetMapping
     public ResponseEntity<List<Funcionario>> listarTodos() {
         return ResponseEntity.ok(funcionarioService.listarTodos());
     }
     
+    /**
+     * Busca funcionário por ID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Funcionario> buscarPorId(@PathVariable Long id) {
         return funcionarioService.buscarPorId(id)
@@ -40,18 +46,27 @@ public class FuncionarioController {
             .orElse(ResponseEntity.notFound().build());
     }
     
+    /**
+     * Cria um novo funcionário.
+     */
     @PostMapping
     public ResponseEntity<Funcionario> criar(@Valid @RequestBody Funcionario funcionario) {
         Funcionario funcionarioSalvo = funcionarioService.criar(funcionario);
         return ResponseEntity.status(HttpStatus.CREATED).body(funcionarioSalvo);
     }
     
+    /**
+     * Atualiza dados do funcionário.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Funcionario> atualizar(@PathVariable Long id, @Valid @RequestBody Funcionario funcionario) {
         Funcionario funcionarioAtualizado = funcionarioService.atualizar(id, funcionario);
         return ResponseEntity.ok(funcionarioAtualizado);
     }
     
+    /**
+     * Exclui um funcionário.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         funcionarioService.deletar(id);
