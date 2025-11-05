@@ -7,6 +7,7 @@ public class ClienteDTO {
     private String telefone;
     private String cpf;
     private java.time.LocalDate dtNascimento;
+    private String genero;
     private String endereco;
     private java.time.LocalDateTime dtCadastro;
 
@@ -20,13 +21,14 @@ public class ClienteDTO {
 
     public ClienteDTO(Long idPessoa, String nome, String email,
                        String telefone, String cpf, java.time.LocalDate dtNascimento,
-                       String endereco, java.time.LocalDateTime dtCadastro) {
+                       String genero, String endereco, java.time.LocalDateTime dtCadastro) {
         this.idPessoa = idPessoa;
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
         this.cpf = cpf;
         this.dtNascimento = dtNascimento;
+        this.genero = genero;
         this.endereco = endereco;
         this.dtCadastro = dtCadastro;
     }
@@ -43,6 +45,8 @@ public class ClienteDTO {
     public void setCpf(String cpf) { this.cpf = cpf; }
     public java.time.LocalDate getDtNascimento() { return dtNascimento; }
     public void setDtNascimento(java.time.LocalDate dtNascimento) { this.dtNascimento = dtNascimento; }
+    public String getGenero() { return genero; }
+    public void setGenero(String genero) { this.genero = genero; }
     public String getEndereco() { return endereco; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
     public java.time.LocalDateTime getDtCadastro() { return dtCadastro; }

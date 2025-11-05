@@ -51,6 +51,10 @@ public class Compra {
     @Column(name = "tipo", length = 20)
     private TipoCompra tipo;
 
+    @Size(max = 30, message = "Tipo de pagamento deve ter no máximo 30 caracteres")
+    @Column(name = "tipo_pagamento", length = 30)
+    private String tipoPagamento;
+
     @PrePersist
     protected void onCreate() {
         if (dtInicio == null) {
@@ -101,4 +105,7 @@ public class Compra {
 
     public TipoCompra getTipo() { return tipo; }
     public void setTipo(TipoCompra tipo) { this.tipo = tipo; }
+
+    public String getTipoPagamento() { return tipoPagamento; }
+    public void setTipoPagamento(String tipoPagamento) { this.tipoPagamento = tipoPagamento; }
 }

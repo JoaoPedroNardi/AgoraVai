@@ -239,7 +239,7 @@ async function carregarCompras() {
     const tbody = document.querySelector('#tab-compras tbody');
     if (!tbody) return;
     // Mostrar skeleton enquanto carrega
-    mostrarSkeletonTabela(tbody, 8, 5);
+    mostrarSkeletonTabela(tbody, 9, 5);
     
     try {
         const compras = await CompraAPI.listarTodas();
@@ -247,7 +247,7 @@ async function carregarCompras() {
         renderizarCompras(tbody, filtradas);
     } catch (error) {
         console.error('Erro ao carregar compras:', error);
-        mostrarErroTabela(tbody, 8, 'compras');
+        mostrarErroTabela(tbody, 9, 'compras');
     }
 }
 
@@ -281,7 +281,7 @@ function renderizarCompras(tbody, compras) {
     tbody.innerHTML = '';
     
     if (!compras || compras.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--muted-foreground);">Nenhuma compra registrada</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 2rem; color: var(--muted-foreground);">Nenhuma compra registrada</td></tr>';
         return;
     }
     
@@ -316,6 +316,8 @@ function renderizarCompras(tbody, compras) {
         if (String(compra.status).toUpperCase() === 'CANCELADA') displayStatus = 'Cancelada';
         else if (String(compra.status).toUpperCase() === 'FINALIZADA') displayStatus = 'Finalizada';
         else if (String(compra.status).toUpperCase() === 'PENDENTE') displayStatus = (isAluguel) ? 'Ativa' : 'Finalizada';
+        const tpRaw = String(compra.tipoPagamento || '').toLowerCase();
+        const tpLabel = tpRaw === 'pix' ? 'Pix' : tpRaw === 'cartao' ? 'Cartão de Crédito' : tpRaw === 'boleto' ? 'Boleto' : '-';
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td><div class="subtext">CMP${String(compra.idCompra).padStart(3, '0')}</div></td>
@@ -324,6 +326,7 @@ function renderizarCompras(tbody, compras) {
             <td>${valor}</td>
             <td>${diasRestante}</td>
             <td>${Utils.getModoBadge(modo)}</td>
+            <td>${tpLabel}</td>
             <td>${Utils.getStatusBadgeLabel(displayStatus)}</td>
             <td>
                 <div class="action-buttons" style="display: flex; gap: 0.5rem;">
@@ -412,6 +415,7 @@ async function verDetalhesCompra(idCompra) {
                     <p class="subtext">ID: ${idFmt}</p>
                     <p>Status: ${Utils.getStatusBadgeLabel(displayStatus)}</p>
                     <p>Tipo: ${Utils.getModoBadge(modo)}</p>
+                    <p>Tipo Pagamento: ${(() => { const p = String(compra.tipoPagamento || '').toLowerCase(); return p==='pix'?'Pix':p==='cartao'?'Cartão de Crédito':p==='boleto'?'Boleto':'-'; })()}</p>
                     <p>InÃ­cio: ${dtInicio}</p>
                     <p>Fim: ${dtFim}</p>
                     <p>Dias restantes: ${isAluguel ? diasRestantes : '-'}</p>

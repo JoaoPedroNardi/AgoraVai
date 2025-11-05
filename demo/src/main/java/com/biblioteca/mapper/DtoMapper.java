@@ -13,6 +13,7 @@ public class DtoMapper {
             c.getTelefone(),
             c.getCpf(),
             c.getDtNascimento(),
+            c.getGenero(),
             c.getEndereco(),
             c.getDtCadastro()
         );
@@ -41,7 +42,7 @@ public class DtoMapper {
                 ? cp.getTipo().name()
                 : (cp.getLivro() != null && cp.getLivro().getVlAluguel() != null ? "ALUGUEL" : "COMPRA");
         return new CompraDTO(cp.getIdCompra(), toLivroDTO(cp.getLivro()), toClienteDTO(cp.getCliente()),
-                cp.getDtInicio(), cp.getDtFim(), cp.getStatus(), tipoStr);
+                cp.getDtInicio(), cp.getDtFim(), cp.getStatus(), tipoStr, cp.getTipoPagamento());
     }
 
     public static AvaliacaoDTO toAvaliacaoDTO(Avaliacao av) {

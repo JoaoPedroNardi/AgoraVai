@@ -68,11 +68,15 @@ public abstract class Pessoa {
     @Pattern(regexp = "\\d{10,20}", message = "Telefone deve conter apenas números (10-20 dígitos)")
     @Column(name = "telefone", length = 20)
     private String telefone;
-    
+
     @NotBlank(message = "Email é obrigatório")
     @Email(message = "Email deve ser válido")
     @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
+
+    @Size(max = 50, message = "Gênero deve ter no máximo 50 caracteres")
+    @Column(name = "genero", length = 50)
+    private String genero;
     
     public Pessoa() {}
     
@@ -96,4 +100,7 @@ public abstract class Pessoa {
     
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getGenero() { return genero; }
+    public void setGenero(String genero) { this.genero = genero; }
 }

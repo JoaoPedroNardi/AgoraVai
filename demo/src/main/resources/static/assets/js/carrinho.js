@@ -303,7 +303,8 @@ const Carrinho = {
                     livro: { idLivro: item.idLivro },
                     status: tipoUpper === 'COMPRA' ? 'FINALIZADA' : 'PENDENTE',
                     tipo: tipoUpper,
-                    vlTotal: parseFloat(item.preco)
+                    vlTotal: parseFloat(item.preco),
+                    tipoPagamento: metodo
                 };
                 await CompraAPI.criar(compra);
             }

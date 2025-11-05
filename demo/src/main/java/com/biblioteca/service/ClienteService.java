@@ -148,6 +148,9 @@ public class ClienteService {
         if (cliente.getSenha() == null || cliente.getSenha().length() < 6) {
             throw new BusinessException("Senha deve ter no mínimo 6 caracteres");
         }
+        if (cliente.getGenero() == null || cliente.getGenero().trim().isEmpty()) {
+            throw new BusinessException("Gênero é obrigatório");
+        }
     }
     
     private void verificarCpfDuplicado(String cpf, Long idExcluir) {

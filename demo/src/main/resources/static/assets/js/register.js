@@ -74,6 +74,7 @@ async function handleRegistro(e) {
     const cpf = document.getElementById('cpf')?.value;
     const telefone = document.getElementById('telefone')?.value;
     const dtNascimento = document.getElementById('dtNascimento')?.value; // yyyy-MM-dd
+    const genero = document.getElementById('genero')?.value;
     const endereco = document.getElementById('endereco')?.value;
     const senha = document.getElementById('register-password')?.value;
     const confirmarSenha = document.getElementById('confirm-password')?.value;
@@ -88,7 +89,7 @@ async function handleRegistro(e) {
     });
     
     // Validações básicas
-    if (!nome || !email || !cpf || !telefone || !dtNascimento || !endereco || !senha || !confirmarSenha) {
+    if (!nome || !email || !cpf || !telefone || !dtNascimento || !genero || !endereco || !senha || !confirmarSenha) {
         UI.showError('Por favor, preencha todos os campos obrigatórios');
         return;
     }
@@ -151,6 +152,17 @@ async function handleRegistro(e) {
     }
     dtNascimentoError.style.display = 'none';
     dtNascimentoError.textContent = '';
+
+    // Validar gênero
+    const generoError = document.getElementById('genero-error');
+    if (!genero) {
+        generoError.textContent = 'Selecione um gênero';
+        generoError.style.display = 'block';
+        return;
+    } else {
+        generoError.style.display = 'none';
+        generoError.textContent = '';
+    }
     
     // Validar senhas
     const passwordError = document.getElementById('password-error');
@@ -186,7 +198,8 @@ async function handleRegistro(e) {
             cpf: cpfLimpo,
             telefone: telefoneLimpo,
             endereco: endereco,
-            dtNascimento: dtNascimento
+            dtNascimento: dtNascimento,
+            genero: genero
         };
         
         const data = await AuthAPI.register(clienteData);
