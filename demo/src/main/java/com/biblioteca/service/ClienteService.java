@@ -35,37 +35,7 @@ public class ClienteService {
     }
     
     public Cliente criarCliente(Cliente cliente) {
-        // Validações básicas
-        if (cliente.getEmail() == null || cliente.getEmail().trim().isEmpty()) {
-            throw new BusinessException("Email é obrigatório");
-        }
-        
-        if (cliente.getSenha() == null || cliente.getSenha().trim().isEmpty()) {
-            throw new BusinessException("Senha é obrigatória");
-        }
-        
-        // Verificar se já existe cliente com este email
-        Optional<Cliente> clienteExistente = clienteRepository.findByEmail(cliente.getEmail());
-        if (clienteExistente.isPresent()) {
-            throw new BusinessException("Email já cadastrado");
-        }
-        
-        // Definir data e hora de cadastro
-        if (cliente.getDtCadastro() == null) {
-            cliente.setDtCadastro(LocalDateTime.now());
-        }
-        
-        // Criptografar senha se necessário
-        if (cliente.getSenha() != null && !cliente.getSenha().startsWith("$2")) {
-            cliente.setSenha(passwordEncoder.encode(cliente.getSenha()));
-        }
-        // Salvar cliente e preencher id_cliente com id_pessoa
-        Cliente salvo = clienteRepository.save(cliente);
-        if (salvo.getIdCliente() == null) {
-            salvo.setIdCliente(salvo.getIdPessoa());
-            salvo = clienteRepository.save(salvo);
-        }
-        return salvo;
+        return criar(cliente);
     }
     
     public Optional<Cliente> buscarPorCpf(String cpf) {
@@ -88,15 +58,28 @@ public class ClienteService {
     }
     
     public Cliente criar(Cliente cliente) {
+        // Normalizar email (minúsculo) e gênero (nulo se vazio)
+        if (cliente.getEmail() != null) {
+            cliente.setEmail(cliente.getEmail().trim().toLowerCase());
+        }
+        if (cliente.getGenero() != null && cliente.getGenero().trim().isEmpty()) {
+            cliente.setGenero(null);
+        }
+
         // Define data e hora de cadastro automaticamente
         if (cliente.getDtCadastro() == null) {
             cliente.setDtCadastro(LocalDateTime.now());
         }
-        
+
+        // Criptografar senha se necessário
+        if (cliente.getSenha() != null && !cliente.getSenha().isEmpty() && !cliente.getSenha().startsWith("$2")) {
+            cliente.setSenha(passwordEncoder.encode(cliente.getSenha()));
+        }
+
         validarCliente(cliente);
         verificarCpfDuplicado(cliente.getCpf(), null);
         verificarEmailDuplicado(cliente.getEmail(), null);
-        
+
         Cliente salvo = clienteRepository.save(cliente);
         if (salvo.getIdCliente() == null) {
             salvo.setIdCliente(salvo.getIdPessoa());
@@ -109,15 +92,23 @@ public class ClienteService {
         Cliente clienteExistente = clienteRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com ID: " + id));
         
+        // Normalizar campos de entrada
+        String emailNormalizado = cliente.getEmail() != null ? cliente.getEmail().trim().toLowerCase() : null;
+        String generoNormalizado = cliente.getGenero() != null ? cliente.getGenero().trim() : null;
+
         verificarCpfDuplicado(cliente.getCpf(), id);
-        verificarEmailDuplicado(cliente.getEmail(), id);
+        verificarEmailDuplicado(emailNormalizado, id);
+        if (generoNormalizado == null || generoNormalizado.isEmpty()) {
+            throw new BusinessException("Gênero é obrigatório");
+        }
         
         clienteExistente.setNome(cliente.getNome());
         clienteExistente.setCpf(cliente.getCpf());
-        clienteExistente.setEmail(cliente.getEmail());
+        clienteExistente.setEmail(emailNormalizado);
         clienteExistente.setEndereco(cliente.getEndereco());
         clienteExistente.setTelefone(cliente.getTelefone());
         clienteExistente.setDtNascimento(cliente.getDtNascimento());
+        clienteExistente.setGenero(generoNormalizado);
         
         if (cliente.getSenha() != null && !cliente.getSenha().isEmpty() && !"******".equals(cliente.getSenha())) {
             String novaSenha = cliente.getSenha();

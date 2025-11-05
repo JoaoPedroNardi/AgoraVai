@@ -565,6 +565,12 @@ const ClienteModals = {
             Toast.error('Senha deve ter no mínimo 6 caracteres');
             return;
         }
+
+        // Validar gênero
+        if (!genero || genero.trim() === '') {
+            Toast.error('Selecione um gênero');
+            return;
+        }
         
         // Validar data de nascimento (incompleta/inválida/futura)
         if (dtNascimento) {
@@ -609,7 +615,7 @@ const ClienteModals = {
                 telefone: telefone || null,
                 dtNascimento: dtNascimento || null,
                 endereco: document.getElementById('cliente-endereco').value || null
-                ,genero: genero || null
+                ,genero: genero
             };
         
         await ClienteAPI.criar(cliente);
@@ -696,8 +702,15 @@ const ClienteModals = {
                 telefone: document.getElementById('edit-cliente-telefone').value.replace(/\D/g, ''),
                 dtNascimento: document.getElementById('edit-cliente-data-nascimento').value || null,
                 endereco: document.getElementById('edit-cliente-endereco').value,
-                genero: document.getElementById('edit-cliente-genero').value || null
+                genero: document.getElementById('edit-cliente-genero').value
             };
+
+            // Validar gênero na edição
+            if (!cliente.genero || cliente.genero.trim() === '') {
+                UI.hideLoading(submitBtn);
+                Toast.error('Selecione um gênero');
+                return;
+            }
 
             // Validar data de nascimento (se preenchida): formato/validez/não futura e idade mínima >= 12
             if (cliente.dtNascimento) {
