@@ -117,6 +117,10 @@ async function carregarDadosCliente(userId) {
                         <p>${cliente.dtNascimento ? UI.formatDate(cliente.dtNascimento) : 'Não informado'}</p>
                     </div>
                     <div class="info-item">
+                        <label>Gênero</label>
+                        <p>${cliente.genero || 'Não informado'}</p>
+                    </div>
+                    <div class="info-item">
                         <label>CPF</label>
                         <p>${cliente.cpf ? Utils.formatarCPF(cliente.cpf) : 'Não informado'}</p>
                     </div>

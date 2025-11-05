@@ -55,6 +55,15 @@ const ClienteModals = {
                 </div>
 
                 <div class="form-group">
+                    <label for="cliente-genero">Gênero</label>
+                    <select id="cliente-genero" name="genero">
+                        <option value="">Selecione...</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label for="cliente-endereco">Endereço</label>
                     <textarea id="cliente-endereco" name="endereco" rows="3" placeholder="Rua, número, bairro, cidade - UF"></textarea>
                 </div>
@@ -126,6 +135,15 @@ const ClienteModals = {
                 <div class="form-group">
                     <label for="edit-cliente-data-nascimento">Data de Nascimento</label>
                     <input type="date" id="edit-cliente-data-nascimento" name="dtNascimento">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-cliente-genero">Gênero</label>
+                    <select id="edit-cliente-genero" name="genero">
+                        <option value="">Selecione...</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -348,6 +366,9 @@ const ClienteModals = {
             document.getElementById('edit-cliente-telefone').value = cliente.telefone || '';
             document.getElementById('edit-cliente-data-nascimento').value = cliente.dtNascimento || '';
             document.getElementById('edit-cliente-endereco').value = cliente.endereco || '';
+            const genero = cliente.genero || '';
+            const generoSelect = document.getElementById('edit-cliente-genero');
+            if (generoSelect) generoSelect.value = genero;
             
             Modal.open('modal-editar-cliente');
         } catch (error) {
@@ -458,6 +479,10 @@ const ClienteModals = {
                                 <span style="color: #6b7280; font-size: 0.875rem;">Data de Nascimento</span>
                                 <p style="font-weight: 600;">${cliente.dtNascimento ? UI.formatDate(cliente.dtNascimento) : 'Não informado'}</p>
                             </div>
+                            <div>
+                                <span style="color: #6b7280; font-size: 0.875rem;">Gênero</span>
+                                <p style="font-weight: 600;">${cliente.genero || 'Não informado'}</p>
+                            </div>
                         </div>
                         
                         ${cliente.endereco ? `
@@ -514,7 +539,8 @@ const ClienteModals = {
         const cpf = document.getElementById('cliente-cpf').value.replace(/\D/g, '');
         const senha = document.getElementById('cliente-senha').value;
         const telefone = document.getElementById('cliente-telefone').value.replace(/\D/g, '');
-        const dtNascimento = document.getElementById('cliente-data-nascimento').value;
+                const dtNascimento = document.getElementById('cliente-data-nascimento').value;
+        const genero = document.getElementById('cliente-genero').value;
         
         // Validar nome
         if (nome.length < 3) {
@@ -583,6 +609,7 @@ const ClienteModals = {
                 telefone: telefone || null,
                 dtNascimento: dtNascimento || null,
                 endereco: document.getElementById('cliente-endereco').value || null
+                ,genero: genero || null
             };
         
         await ClienteAPI.criar(cliente);
@@ -668,7 +695,8 @@ const ClienteModals = {
                 cpf: document.getElementById('edit-cliente-cpf').value.replace(/\D/g, ''),
                 telefone: document.getElementById('edit-cliente-telefone').value.replace(/\D/g, ''),
                 dtNascimento: document.getElementById('edit-cliente-data-nascimento').value || null,
-                endereco: document.getElementById('edit-cliente-endereco').value
+                endereco: document.getElementById('edit-cliente-endereco').value,
+                genero: document.getElementById('edit-cliente-genero').value || null
             };
 
             // Validar data de nascimento (se preenchida): formato/validez/não futura e idade mínima >= 12
