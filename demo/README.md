@@ -75,6 +75,99 @@ Este projeto é uma API de biblioteca construída com Spring Boot, usando JPA/Hi
 - Rodar localmente: `./mvnw spring-boot:run` (Windows: `mvnw.cmd spring-boot:run`).
 - Porta padrão: `8080` (configurável em `application.properties`).
 
+## Auditoria: convenção e compatibilidade
+- Campos padronizados disponíveis em todas as entidades principais: `createdAt`, `createdByEmail`, `createdByRole`.
+- Aliases JSON para compatibilidade com frontends existentes:
+  - `dtCadastro` → aponta para `createdAt`
+  - `cadastradoPorEmail` → aponta para `createdByEmail`
+  - `cadastradoPorRole` → aponta para `createdByRole`
+- Entidades cobertas: `Livro`, `Cliente`, `Funcionario`, `Admin`.
+
+Exemplo de resposta `LivroDTO`:
+```json
+{
+  "id": 1,
+  "titulo": "Exemplo",
+  "autor": "Autor",
+  "preco": 10.99,
+  "createdAt": "2025-01-01T12:34:56",
+  "createdByEmail": "admin@exemplo.com",
+  "createdByRole": "ADMIN",
+  "dtCadastro": "2025-01-01T12:34:56",
+  "cadastradoPorEmail": "admin@exemplo.com",
+  "cadastradoPorRole": "ADMIN"
+}
+```
+
+## Endpoints úteis para inspeção
+- OpenAPI: `GET http://localhost:8080/v3/api-docs`
+- Livros:
+  - `GET http://localhost:8080/api/livros`
+  - `GET http://localhost:8080/api/livros/{id}`
+  - `GET http://localhost:8080/api/livros/buscar/titulo?titulo=...`
+  - `GET http://localhost:8080/api/livros/buscar/autor?autor=...`
+  - `GET http://localhost:8080/api/livros/buscar/genero?genero=...`
+
+## Autenticação JWT: como obter token e testar endpoints
+- Endpoints de autenticação (`AuthController`):
+  - Login: `POST http://localhost:8080/api/auth/login`
+  - Registro (clientes): `POST http://localhost:8080/api/auth/registro`
+  - Verificar autenticação: `GET http://localhost:8080/api/auth/me`
+
+### Login
+Body (JSON):
+```json
+{
+  "email": "seu-email@exemplo.com",
+  "senha": "sua-senha"
+}
+```
+Resposta (exemplo):
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tipo": "Bearer",
+  "expiraEm": 86400000
+}
+```
+
+### Usando o token
+Inclua o header: `Authorization: Bearer <token>`.
+
+Exemplo `curl` protegendo um endpoint (ajuste conforme seus endpoints protegidos):
+```bash
+curl -H "Authorization: Bearer <token>" http://localhost:8080/api/compras/minhas
+```
+
+### Registro de cliente
+Body (JSON):
+```json
+{
+  "nome": "Cliente Teste",
+  "cpf": "00011122233",
+  "email": "cliente@exemplo.com",
+  "senha": "123456"
+}
+```
+Observação: a senha será criptografada e o cliente poderá fazer login em seguida.
+
+
+## Perfis de execução (MySQL local vs remoto)
+- Remoto: definido atualmente em `src/main/resources/application.properties` (host Railway).
+- Local: use `src/main/resources/application-local.properties` com `localhost:3306`.
+- Ativar profile local:
+  - Windows (Maven): `mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=local`
+  - Variável de ambiente: `set SPRING_PROFILES_ACTIVE=local` e depois `mvnw.cmd spring-boot:run`
+  - Jar: `java -jar target/demo-1.0.0.jar --spring.profiles.active=local`
+
+### Preparando MySQL local
+- Verifique se o serviço MySQL está ativo na porta `3306`.
+- Crie o banco (se necessário):
+  - `mysql -u root -p`
+  - `CREATE DATABASE bibliotech CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
+- Ajuste `spring.datasource.username` e `spring.datasource.password` em `application-local.properties` para suas credenciais locais.
+- A propriedade `spring.jpa.hibernate.ddl-auto=update` criará/atualizará tabelas conforme as entidades.
+
 ## Observações
 - Comentários explicativos foram adicionados em Services, Controllers e Repositories para facilitar manutenção e onboarding.
 - Para documentação de endpoints, consulte os comentários nos Controllers.

@@ -112,6 +112,9 @@ function handleFuncionariosClick(e) {
         case 'deletar-funcionario':
             deletarFuncionario(id);
             break;
+        case 'ver-funcionario':
+            verDetalhesFuncionario(id);
+            break;
     }
 }
 
@@ -945,6 +948,7 @@ function renderizarFuncionarios(tbody, funcionarios) {
                     <button class="btn btn-icon btn-danger" data-action="deletar-funcionario" data-id-funcionario="${funcionario.idPessoa}">
                         <svg width="16" height="16" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     </button>
+                    <button class="btn btn-outline btn-sm" data-action="ver-funcionario" data-id-funcionario="${funcionario.idPessoa}">Ver Detalhes</button>
                 </div>
             </td>
         `;
@@ -970,6 +974,63 @@ async function deletarFuncionario(idFuncionario) {
     } catch (error) {
         console.error('Erro ao deletar funcionário:', error);
         UI.showError('Erro ao excluir funcionário');
+    }
+}
+
+async function verDetalhesFuncionario(idFuncionario) {
+    try {
+        const funcionario = await FuncionarioAPI.buscarPorId(idFuncionario);
+        if (!funcionario) {
+            UI.showError('Funcionário não encontrado');
+            return;
+        }
+
+        const idFmt = `FUNC${String(funcionario.idPessoa).padStart(3, '0')}`;
+        const telefoneFmt = funcionario?.telefone ? Utils.formatarTelefone(funcionario.telefone) : '-';
+        const dtNascimentoFmt = funcionario?.dtNascimento ? UI.formatDate(funcionario.dtNascimento) : '-';
+
+        const detalhesHTML = `
+            <div class="details-grid" style="display:grid;gap:1rem;padding:1rem;grid-template-columns:1fr 1fr;">
+                <div>
+                    <h4 style="margin:0 0 .5rem 0;">Funcionário</h4>
+                    <p class="subtext">ID: ${idFmt}</p>
+                    <p>Nome: ${funcionario?.nome || '-'}</p>
+                    <p>Email: ${funcionario?.email || '-'}</p>
+                    <p>Telefone: ${telefoneFmt}</p>
+                    <p>CPF: ${funcionario?.cpf || '-'}</p>
+                    <p>Gênero: ${funcionario?.genero || '-'}</p>
+                    <p>Nascimento: ${dtNascimentoFmt}</p>
+                </div>
+                <div>
+                    <h4 style="margin:0 0 .5rem 0;">Endereço</h4>
+                    <p>${funcionario?.endereco || '-'}</p>
+                </div>
+            </div>
+        `;
+
+        const footerHTML = `
+            <button type="button" class="btn btn-outline" data-action="close">Fechar</button>
+        `;
+
+        if (typeof Modal !== 'undefined' && Modal.create) {
+            const modalId = 'modal-funcionario-detalhes';
+            const existing = document.getElementById(modalId);
+            if (existing) existing.remove();
+
+            Modal.create(
+                modalId,
+                `<svg width="20" height="20" viewBox="0 0 24 24" style="margin-right:.5rem"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>Detalhes do Funcionário ${idFmt}`,
+                detalhesHTML,
+                footerHTML,
+                'modal-wide'
+            );
+            Modal.open(modalId);
+        } else {
+            UI.showInfo('Detalhes do funcionário:\n' + detalhesHTML.replace(/<[^>]+>/g, ''));
+        }
+    } catch (error) {
+        console.error('Erro ao carregar detalhes do funcionário:', error);
+        UI.showError('Erro ao carregar detalhes do funcionário');
     }
 }
 
@@ -1005,6 +1066,7 @@ window.editarLivro = editarLivro;
 window.deletarLivro = deletarLivro;
 window.editarFuncionario = editarFuncionario;
 window.deletarFuncionario = deletarFuncionario;
+window.verDetalhesFuncionario = verDetalhesFuncionario;
 // Atualiza linha pontual quando funcionÃ¡rio Ã© atualizado via modal
 window.addEventListener('funcionario-atualizado', (e) => {
     const dto = e?.detail;

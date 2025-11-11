@@ -1,6 +1,7 @@
 package com.biblioteca.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.biblioteca.security.JwtAuthenticationFilter;
 
@@ -24,10 +26,13 @@ import com.biblioteca.security.JwtAuthenticationFilter;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    
+
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-    
+
+    @Value("${cors.allowed.origins:*}")
+    private String allowedOrigins;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -35,47 +40,39 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
-                // Rotas públicas
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/livros/**").permitAll() // Qualquer um pode ver livros (apenas leitura)
-                .requestMatchers(HttpMethod.GET, "/api/avaliacoes/**").permitAll() // Qualquer um pode ver avaliações (apenas leitura)
-                // Páginas estáticas e assets (frontend público)
+                .requestMatchers(HttpMethod.GET, "/api/livros/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/avaliacoes/**").permitAll()
                 .requestMatchers("/", "/index.html", "/pages/**", "/assets/**").permitAll()
-                
-                // Rotas de Cliente (apenas clientes autenticados)
+
                 .requestMatchers(HttpMethod.POST, "/api/compras/**").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.POST, "/api/avaliacoes/**").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.PUT, "/api/avaliacoes/**").hasRole("CLIENTE")
-                // Admin pode excluir avaliações indevidas/inapropriadas
                 .requestMatchers(HttpMethod.DELETE, "/api/avaliacoes/**").hasAnyRole("CLIENTE", "ADMIN")
-                
-                // Rotas de Funcionário (funcionários e admins)
+
                 .requestMatchers("/api/funcionarios/**").hasAnyRole("FUNCIONARIO", "ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/livros/**").hasAnyRole("FUNCIONARIO", "ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/livros/**").hasAnyRole("FUNCIONARIO", "ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/livros/**").hasAnyRole("FUNCIONARIO", "ADMIN")
-                // Permitir clientes listarem e renovarem suas próprias compras
                 .requestMatchers(HttpMethod.GET, "/api/compras/minhas").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.PATCH, "/api/compras/*/renovar").hasRole("CLIENTE")
-                // Demais consultas de compras restritas a funcionários/admins
                 .requestMatchers(HttpMethod.GET, "/api/compras/**").hasAnyRole("FUNCIONARIO", "ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/api/compras/**").hasAnyRole("FUNCIONARIO", "ADMIN")
-                
-                
-                // Rotas de Admin (apenas admins)
+
                 .requestMatchers("/api/administradores/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/api/funcionarios/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/funcionarios/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/funcionarios/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/compras/**").hasRole("ADMIN")
-                
-                // Qualquer outra rota requer autenticação
+
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        
+
         return http.build();
     }
+
+    
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -85,9 +82,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // Permitir qualquer origem (inclui domínio do Railway em produção)
-        // Use allowedOriginPatterns com "*" quando allowCredentials(true)
-        config.setAllowedOriginPatterns(Arrays.asList("*"));
+        List<String> patterns = Arrays.stream((allowedOrigins == null ? "*" : allowedOrigins).split(","))
+            .map(String::trim)
+            .filter(s -> !s.isBlank())
+            .toList();
+        if (patterns.isEmpty()) {
+            config.setAllowedOriginPatterns(Arrays.asList("*"));
+        } else {
+            config.setAllowedOriginPatterns(patterns);
+        }
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setExposedHeaders(Arrays.asList("*"));

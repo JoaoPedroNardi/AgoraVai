@@ -95,9 +95,35 @@ public class ClienteService {
             cliente.setGenero(null);
         }
 
-        // Define data e hora de cadastro automaticamente
-        if (cliente.getDtCadastro() == null) {
-            cliente.setDtCadastro(LocalDateTime.now());
+        // Define data e hora de cadastro (createdAt) automaticamente
+        if (cliente.getCreatedAt() == null) {
+            cliente.setCreatedAt(LocalDateTime.now());
+        }
+
+        // Auditoria: quem cadastrou (email/role)
+        // Se houver usuário autenticado, usa o principal; caso contrário, usa o próprio email do cliente
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && auth.getName() != null && !"anonymousUser".equalsIgnoreCase(auth.getName())) {
+            cliente.setCreatedByEmail(auth.getName());
+            String role = null;
+            try {
+                Object details = auth.getDetails();
+                if (details instanceof java.util.Map<?,?> map && map.get("role") != null) {
+                    role = String.valueOf(map.get("role"));
+                } else if (auth.getAuthorities() != null && !auth.getAuthorities().isEmpty()) {
+                    String authRole = auth.getAuthorities().iterator().next().getAuthority();
+                    role = authRole != null && authRole.startsWith("ROLE_") ? authRole.substring(5) : authRole;
+                }
+            } catch (Exception ignored) {}
+            cliente.setCreatedByRole(role);
+        } else {
+            // Registro via endpoint público: gravar email do próprio cliente e role padrão
+            if (cliente.getEmail() != null && !cliente.getEmail().isBlank()) {
+                cliente.setCreatedByEmail(cliente.getEmail().trim().toLowerCase());
+            }
+            // Importante: no sistema, a role funcional para clientes é "CLIENTE".
+            // Se desejar mostrar "USER" apenas como texto, troque a string abaixo.
+            cliente.setCreatedByRole("CLIENTE");
         }
 
         // Criptografar senha se necessário

@@ -3,6 +3,7 @@ package com.biblioteca.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -75,6 +76,15 @@ public class Livro {
     @Column(name = "sinopse", columnDefinition = "TEXT")
     private String sinopse;
     
+    @Column(name = "created_by_email", length = 255)
+    private String createdByEmail;
+    
+    @Column(name = "created_by_role", length = 50)
+    private String createdByRole;
+    
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+    
     @JsonIgnore
     @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL)
     private List<Compra> compras;
@@ -118,6 +128,15 @@ public class Livro {
 
     public String getSinopse() { return sinopse; }
     public void setSinopse(String sinopse) { this.sinopse = sinopse; }
+    
+    public String getCreatedByEmail() { return createdByEmail; }
+    public void setCreatedByEmail(String createdByEmail) { this.createdByEmail = createdByEmail; }
+    
+    public String getCreatedByRole() { return createdByRole; }
+    public void setCreatedByRole(String createdByRole) { this.createdByRole = createdByRole; }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     
     public List<Compra> getCompras() { return compras; }
     public void setCompras(List<Compra> compras) { this.compras = compras; }

@@ -17,23 +17,20 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
 public class AuthController {
-    
+
     @Autowired
     private AuthService authService;
-    
+
     @Autowired
     private ClienteService clienteService;
-    
+
     @Autowired
     private ClienteRepository clienteRepository;
-    
-    // Removidos serviços e repositórios temporários de admin/funcionário
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     /**
      * Endpoint de login
      */
@@ -42,28 +39,28 @@ public class AuthController {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
-    
+
     /**
      * Endpoint de registro (apenas clientes podem se auto-registrar)
      */
     @PostMapping("/registro")
     public ResponseEntity<?> registro(@RequestBody Cliente cliente) {
         try {
-            // Verificar se email já existe
+            // Verificar se email ja existe
             if (authService.emailJaCadastrado(cliente.getEmail())) {
-                throw new BusinessException("Email já cadastrado");
+                throw new BusinessException("Email ja cadastrado");
             }
-            
+
             // Criptografar senha
             cliente.setSenha(passwordEncoder.encode(cliente.getSenha()));
-            
+
             // Criar cliente
             Cliente novoCliente = clienteService.criarCliente(cliente);
-            
+
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Cliente registrado com sucesso");
             response.put("clienteId", novoCliente.getId());
-            
+
             return ResponseEntity.ok(response);
         } catch (BusinessException e) {
             Map<String, String> error = new HashMap<>();
@@ -71,18 +68,14 @@ public class AuthController {
             return ResponseEntity.badRequest().body(error);
         }
     }
-    
+
     /**
-     * Endpoint para verificar se usuário está autenticado
+     * Endpoint para verificar se usuario esta autenticado
      */
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
-        // Este endpoint só será acessível se o usuário estiver autenticado
-        // O Spring Security já valida o token
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Usuário autenticado");
+        response.put("message", "Usuario autenticado");
         return ResponseEntity.ok(response);
     }
-    
-    // Endpoints temporários removidos
 }

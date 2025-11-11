@@ -1,7 +1,8 @@
 package com.biblioteca.dto;
 
-public class ClienteDTO {
+public class AdminDTO {
     private final Long idPessoa;
+    private final Long idAdmin;
     private final String nome;
     private final String email;
     private final String telefone;
@@ -13,10 +14,11 @@ public class ClienteDTO {
     private final String createdByEmail;
     private final String createdByRole;
 
-    public ClienteDTO(Long idPessoa, String nome, String email, String telefone, String cpf,
-                      Object dtNascimento, String genero, String endereco,
-                      Object createdAt, String createdByEmail, String createdByRole) {
+    public AdminDTO(Long idPessoa, Long idAdmin, String nome, String email, String telefone, String cpf,
+                    Object dtNascimento, String genero, String endereco,
+                    Object createdAt, String createdByEmail, String createdByRole) {
         this.idPessoa = idPessoa;
+        this.idAdmin = idAdmin;
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
@@ -30,6 +32,7 @@ public class ClienteDTO {
     }
 
     public Long getIdPessoa() { return idPessoa; }
+    public Long getIdAdmin() { return idAdmin; }
     public String getNome() { return nome; }
     public String getEmail() { return email; }
     public String getTelefone() { return telefone; }

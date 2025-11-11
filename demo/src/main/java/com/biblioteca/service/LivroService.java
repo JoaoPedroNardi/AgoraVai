@@ -1,6 +1,7 @@
 package com.biblioteca.service;
 
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,23 @@ public class LivroService {
      */
     public Livro criar(Livro livro) {
         validarLivro(livro);
+        // Auditoria: quem e quando cadastrou
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            livro.setCreatedByEmail(auth.getName());
+            String role = null;
+            try {
+                Object details = auth.getDetails();
+                if (details instanceof java.util.Map<?,?> map && map.get("role") != null) {
+                    role = String.valueOf(map.get("role"));
+                } else if (auth.getAuthorities() != null && !auth.getAuthorities().isEmpty()) {
+                    String authRole = auth.getAuthorities().iterator().next().getAuthority();
+                    role = authRole != null && authRole.startsWith("ROLE_") ? authRole.substring(5) : authRole;
+                }
+            } catch (Exception ignored) {}
+            livro.setCreatedByRole(role);
+        }
+        livro.setCreatedAt(LocalDateTime.now());
         return livroRepository.save(livro);
     }
     

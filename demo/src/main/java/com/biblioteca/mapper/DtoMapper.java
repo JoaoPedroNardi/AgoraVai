@@ -15,7 +15,9 @@ public class DtoMapper {
             c.getDtNascimento(),
             c.getGenero(),
             c.getEndereco(),
-            c.getDtCadastro()
+            c.getCreatedAt(),
+            c.getCreatedByEmail(),
+            c.getCreatedByRole()
         );
     }
 
@@ -32,7 +34,10 @@ public class DtoMapper {
             l.getAvaliacao(),
             l.getCapaUrl(),
             l.getResumoCurto(),
-            l.getSinopse()
+            l.getSinopse(),
+            l.getCreatedByEmail(),
+            l.getCreatedByRole(),
+            l.getCreatedAt()
         );
     }
 
@@ -49,5 +54,41 @@ public class DtoMapper {
         if (av == null) return null;
         return new AvaliacaoDTO(av.getIdAvaliacao(), toClienteDTO(av.getCliente()), toLivroDTO(av.getLivro()),
                 av.getNota(), av.getDtAvaliacao());
+    }
+
+    public static FuncionarioDTO toFuncionarioDTO(Funcionario f) {
+        if (f == null) return null;
+        return new FuncionarioDTO(
+            f.getIdPessoa(),
+            f.getIdFuncionario(),
+            f.getNome(),
+            f.getEmail(),
+            f.getTelefone(),
+            f.getCpf(),
+            f.getDtNascimento(),
+            f.getGenero(),
+            f.getEndereco(),
+            f.getCreatedAt(),
+            f.getCreatedByEmail(),
+            f.getCreatedByRole()
+        );
+    }
+
+    public static AdminDTO toAdminDTO(Admin a) {
+        if (a == null) return null;
+        return new AdminDTO(
+            a.getIdPessoa(),
+            a.getIdAdmin(),
+            a.getNome(),
+            a.getEmail(),
+            a.getTelefone(),
+            a.getCpf(),
+            a.getDtNascimento(),
+            a.getGenero(),
+            a.getEndereco(),
+            a.getCreatedAt(),
+            a.getCreatedByEmail(),
+            a.getCreatedByRole()
+        );
     }
 }

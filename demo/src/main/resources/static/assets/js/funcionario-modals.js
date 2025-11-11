@@ -53,6 +53,15 @@ const FuncionarioModals = {
                 </div>
 
                 <div class="form-group">
+                    <label for="func-genero">Gênero</label>
+                    <select id="func-genero" name="genero" class="select-input">
+                        <option value="">Selecione...</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label for="func-endereco">Endereço</label>
                     <textarea id="func-endereco" name="endereco" rows="3" placeholder="Rua, número, bairro, cidade - UF"></textarea>
                 </div>
@@ -135,6 +144,7 @@ const FuncionarioModals = {
                 dtNascimento = `${ano}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
             }
             const endereco = document.getElementById('func-endereco').value || null;
+            const genero = (document.getElementById('func-genero').value || '').trim();
 
             // Validações básicas
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -148,6 +158,7 @@ const FuncionarioModals = {
             if (telefone) funcionario.telefone = telefone;
             if (endereco) funcionario.endereco = endereco;
             if (dtNascimento) funcionario.dtNascimento = dtNascimento; // YYYY-MM-DD
+            if (genero) funcionario.genero = genero;
 
             await FuncionarioAPI.criar(funcionario);
 
@@ -197,6 +208,18 @@ const FuncionarioModals = {
                 <div class="form-group">
                     <label for="edit-endereco">Endereço</label>
                     <textarea id="edit-endereco" name="endereco" rows="3" placeholder="Rua, número, bairro, cidade - UF"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-genero">Gênero</label>
+                    <select id="edit-genero" name="genero" class="select-input">
+                        <option value="">Selecione...</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                        <option value="Não Binário">Não Binário</option>
+                        <option value="Prefiro não informar">Prefiro não informar</option>
+                        <option value="Outro">Outro</option>
+                    </select>
                 </div>
             </form>
         `;
@@ -256,6 +279,8 @@ const FuncionarioModals = {
             document.getElementById('edit-endereco').value = funcionario?.endereco || '';
             const dt = funcionario?.dtNascimento ? funcionario.dtNascimento.substring(0,10) : '';
             document.getElementById('edit-dtNascimento').value = dt ? `${dt.slice(8,10)}/${dt.slice(5,7)}/${dt.slice(0,4)}` : '';
+            const generoSel = document.getElementById('edit-genero');
+            if (generoSel) generoSel.value = funcionario?.genero || '';
             Modal.open('modal-editar-funcionario');
         } catch (error) {
             console.error('Erro ao abrir edição de funcionário:', error);
@@ -290,6 +315,7 @@ const FuncionarioModals = {
                 dtNascimento = `${ano}-${String(mes).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
             }
             const endereco = document.getElementById('edit-endereco').value || null;
+            const genero = (document.getElementById('edit-genero').value || '').trim();
 
             // Validações básicas
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -302,6 +328,7 @@ const FuncionarioModals = {
             if (telefone) dto.telefone = telefone;
             if (endereco) dto.endereco = endereco;
             if (dtNascimento) dto.dtNascimento = dtNascimento; // YYYY-MM-DD
+            if (genero) dto.genero = genero;
 
             const atualizado = await FuncionarioAPI.atualizar(idFuncionario, dto);
 

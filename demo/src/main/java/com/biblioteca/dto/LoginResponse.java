@@ -1,14 +1,12 @@
 package com.biblioteca.dto;
 
 public class LoginResponse {
-    private String token;
-    private String nome;
-    private String email;
-    private String role;
-    private Long userId;
-    
-    public LoginResponse() {}
-    
+    private final String token;
+    private final String nome;
+    private final String email;
+    private final String role;
+    private final Long userId;
+
     public LoginResponse(String token, String nome, String email, String role, Long userId) {
         this.token = token;
         this.nome = nome;
@@ -16,45 +14,10 @@ public class LoginResponse {
         this.role = role;
         this.userId = userId;
     }
-    
-    // Getters e Setters
-    public String getToken() {
-        return token;
-    }
-    
-    public void setToken(String token) {
-        this.token = token;
-    }
-    
-    public String getNome() {
-        return nome;
-    }
-    
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
-    public String getRole() {
-        return role;
-    }
-    
-    public void setRole(String role) {
-        this.role = role;
-    }
-    
-    public Long getUserId() {
-        return userId;
-    }
-    
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+
+    public String getToken() { return token; }
+    public String getNome() { return nome; }
+    public String getEmail() { return email; }
+    public String getRole() { return role; }
+    public Long getUserId() { return userId; }
 }

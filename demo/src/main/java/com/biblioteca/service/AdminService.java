@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,9 @@ public class AdminService {
     
     @Autowired
     private AdminRepository adminRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
     /**
      * Lista todos os administradores.
@@ -38,6 +42,30 @@ public class AdminService {
      */
     public Admin criar(Admin admin) {
         validarAdmin(admin);
+        // Criptografar senha se informada
+        if (admin.getSenha() != null && !admin.getSenha().isBlank()) {
+            String senha = admin.getSenha();
+            if (!senha.startsWith("$2")) {
+                admin.setSenha(passwordEncoder.encode(senha));
+            }
+        }
+        // Auditoria padronizada
+        org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            admin.setCreatedByEmail(auth.getName());
+            String role = null;
+            try {
+                Object details = auth.getDetails();
+                if (details instanceof java.util.Map<?,?> map && map.get("role") != null) {
+                    role = String.valueOf(map.get("role"));
+                } else if (auth.getAuthorities() != null && !auth.getAuthorities().isEmpty()) {
+                    String authRole = auth.getAuthorities().iterator().next().getAuthority();
+                    role = authRole != null && authRole.startsWith("ROLE_") ? authRole.substring(5) : authRole;
+                }
+            } catch (Exception ignored) {}
+            admin.setCreatedByRole(role);
+        }
+        admin.setCreatedAt(java.time.LocalDateTime.now());
         Admin salvo = adminRepository.save(admin);
         if (salvo.getIdAdmin() == null) {
             salvo.setIdAdmin(salvo.getIdPessoa());
@@ -59,6 +87,14 @@ public class AdminService {
         adminExistente.setEndereco(admin.getEndereco());
         adminExistente.setTelefone(admin.getTelefone());
         adminExistente.setDtNascimento(admin.getDtNascimento());
+        // Atualizar senha se informada
+        if (admin.getSenha() != null && !admin.getSenha().isBlank()) {
+            String novaSenha = admin.getSenha();
+            if (!novaSenha.startsWith("$2")) {
+                novaSenha = passwordEncoder.encode(novaSenha);
+            }
+            adminExistente.setSenha(novaSenha);
+        }
         
         return adminRepository.save(adminExistente);
     }

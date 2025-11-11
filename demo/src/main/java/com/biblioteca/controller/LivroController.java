@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,88 +24,62 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/livros")
-@CrossOrigin(origins = "*")
 public class LivroController {
-    
+
     @Autowired
     private LivroService livroService;
-    
-    /**
-     * Lista todos os livros.
-     */
+
     @GetMapping
     public ResponseEntity<List<LivroDTO>> listarTodos() {
         List<LivroDTO> dtos = livroService.listarTodos().stream()
-            .map(DtoMapper::toLivroDTO)
-            .toList();
+                .map(DtoMapper::toLivroDTO)
+                .toList();
         return ResponseEntity.ok(dtos);
     }
-    
-    /**
-     * Busca livro por ID.
-     */
+
     @GetMapping("/{id}")
     public ResponseEntity<LivroDTO> buscarPorId(@PathVariable Long id) {
         return livroService.buscarPorId(id)
-            .map(l -> ResponseEntity.ok(DtoMapper.toLivroDTO(l)))
-            .orElse(ResponseEntity.notFound().build());
+                .map(l -> ResponseEntity.ok(DtoMapper.toLivroDTO(l)))
+                .orElse(ResponseEntity.notFound().build());
     }
-    
-    /**
-     * Busca livros por título (contém, case-insensitive).
-     */
+
     @GetMapping("/buscar/titulo")
     public ResponseEntity<List<LivroDTO>> buscarPorTitulo(@RequestParam String titulo) {
         List<LivroDTO> dtos = livroService.buscarPorTitulo(titulo).stream()
-            .map(DtoMapper::toLivroDTO)
-            .toList();
+                .map(DtoMapper::toLivroDTO)
+                .toList();
         return ResponseEntity.ok(dtos);
     }
-    
-    /**
-     * Busca livros por autor (contém, case-insensitive).
-     */
+
     @GetMapping("/buscar/autor")
     public ResponseEntity<List<LivroDTO>> buscarPorAutor(@RequestParam String autor) {
         List<LivroDTO> dtos = livroService.buscarPorAutor(autor).stream()
-            .map(DtoMapper::toLivroDTO)
-            .toList();
+                .map(DtoMapper::toLivroDTO)
+                .toList();
         return ResponseEntity.ok(dtos);
     }
-    
-    /**
-     * Busca livros por gênero exato.
-     */
+
     @GetMapping("/buscar/genero")
     public ResponseEntity<List<LivroDTO>> buscarPorGenero(@RequestParam String genero) {
         List<LivroDTO> dtos = livroService.buscarPorGenero(genero).stream()
-            .map(DtoMapper::toLivroDTO)
-            .toList();
+                .map(DtoMapper::toLivroDTO)
+                .toList();
         return ResponseEntity.ok(dtos);
     }
-    
-    
-    /**
-     * Cria um novo livro.
-     */
+
     @PostMapping
     public ResponseEntity<LivroDTO> criar(@Valid @RequestBody Livro livro) {
         Livro livroSalvo = livroService.criar(livro);
         return ResponseEntity.status(HttpStatus.CREATED).body(DtoMapper.toLivroDTO(livroSalvo));
     }
-    
-    /**
-     * Atualiza informações do livro.
-     */
+
     @PutMapping("/{id}")
     public ResponseEntity<LivroDTO> atualizar(@PathVariable Long id, @Valid @RequestBody Livro livro) {
         Livro livroAtualizado = livroService.atualizar(id, livro);
         return ResponseEntity.ok(DtoMapper.toLivroDTO(livroAtualizado));
     }
-    
-    /**
-     * Exclui um livro.
-     */
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         livroService.deletar(id);

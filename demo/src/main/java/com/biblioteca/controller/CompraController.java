@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,85 +26,60 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/compras")
-@CrossOrigin(origins = "*")
 public class CompraController {
-    
+
     @Autowired
     private CompraService compraService;
-    
-    /**
-     * Lista todas as compras/aluguéis.
-     */
+
     @GetMapping
     public ResponseEntity<List<CompraDTO>> listarTodas() {
         List<CompraDTO> dtos = compraService.listarTodas().stream()
-            .map(DtoMapper::toCompraDTO)
-            .toList();
+                .map(DtoMapper::toCompraDTO)
+                .toList();
         return ResponseEntity.ok(dtos);
     }
-    
-    /**
-     * Busca compra por ID.
-     */
+
     @GetMapping("/{id}")
     public ResponseEntity<CompraDTO> buscarPorId(@PathVariable Long id) {
         return compraService.buscarPorId(id)
-            .map(c -> ResponseEntity.ok(DtoMapper.toCompraDTO(c)))
-            .orElse(ResponseEntity.notFound().build());
+                .map(c -> ResponseEntity.ok(DtoMapper.toCompraDTO(c)))
+                .orElse(ResponseEntity.notFound().build());
     }
-    
-    /**
-     * Lista compras/aluguéis de um cliente específico.
-     */
+
     @GetMapping("/cliente/{clienteId}")
     public ResponseEntity<List<CompraDTO>> buscarPorCliente(@PathVariable Long clienteId) {
         List<CompraDTO> compras = compraService.buscarPorCliente(clienteId).stream()
-            .map(DtoMapper::toCompraDTO)
-            .toList();
+                .map(DtoMapper::toCompraDTO)
+                .toList();
         return ResponseEntity.ok(compras);
     }
-    
-    /**
-     * Lista compras por status.
-     */
+
     @GetMapping("/status/{status}")
     public ResponseEntity<List<CompraDTO>> buscarPorStatus(@PathVariable String status) {
         List<CompraDTO> compras = compraService.buscarPorStatus(status).stream()
-            .map(DtoMapper::toCompraDTO)
-            .toList();
+                .map(DtoMapper::toCompraDTO)
+                .toList();
         return ResponseEntity.ok(compras);
     }
-    
-    /**
-     * Cria nova compra/aluguel.
-     */
+
     @PostMapping
     public ResponseEntity<CompraDTO> criar(@Valid @RequestBody Compra compra) {
         Compra compraSalva = compraService.criar(compra);
         return ResponseEntity.status(HttpStatus.CREATED).body(DtoMapper.toCompraDTO(compraSalva));
     }
-    
-    /**
-     * Atualiza o status de uma compra.
-     */
+
     @PatchMapping("/{id}/status")
     public ResponseEntity<CompraDTO> atualizarStatus(@PathVariable Long id, @RequestParam String status) {
         Compra compraAtualizada = compraService.atualizarStatus(id, status);
         return ResponseEntity.ok(DtoMapper.toCompraDTO(compraAtualizada));
     }
-    
-    /**
-     * Finaliza uma compra.
-     */
+
     @PatchMapping("/{id}/finalizar")
     public ResponseEntity<CompraDTO> finalizarCompra(@PathVariable Long id) {
         Compra compraFinalizada = compraService.finalizarCompra(id);
         return ResponseEntity.ok(DtoMapper.toCompraDTO(compraFinalizada));
     }
 
-    /**
-     * Renova um aluguel, somando dias ao prazo.
-     */
     @PatchMapping("/{id}/renovar")
     public ResponseEntity<CompraDTO> renovarCompra(
             @PathVariable Long id,
@@ -115,12 +89,6 @@ public class CompraController {
         return ResponseEntity.ok(DtoMapper.toCompraDTO(renovada));
     }
 
-    /**
-     * Lista compras do cliente autenticado usando dados do token
-     */
-    /**
-     * Lista compras do cliente autenticado (via token).
-     */
     @GetMapping("/minhas")
     public ResponseEntity<List<CompraDTO>> listarMinhasCompras() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -142,14 +110,11 @@ public class CompraController {
         }
 
         List<CompraDTO> compras = compraService.buscarPorCliente(userId).stream()
-            .map(DtoMapper::toCompraDTO)
-            .toList();
+                .map(DtoMapper::toCompraDTO)
+                .toList();
         return compras.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(compras);
     }
-    
-    /**
-     * Exclui uma compra.
-     */
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         compraService.deletar(id);
