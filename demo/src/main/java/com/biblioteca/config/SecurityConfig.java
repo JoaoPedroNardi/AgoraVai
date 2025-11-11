@@ -44,6 +44,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/livros/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/avaliacoes/**").permitAll()
                 .requestMatchers("/", "/index.html", "/pages/**", "/assets/**").permitAll()
+                // Actuator health/info públicos para healthcheck
+                .requestMatchers("/actuator/health", "/actuator/info").permitAll()
 
                 .requestMatchers(HttpMethod.POST, "/api/compras/**").hasRole("CLIENTE")
                 .requestMatchers(HttpMethod.POST, "/api/avaliacoes/**").hasRole("CLIENTE")

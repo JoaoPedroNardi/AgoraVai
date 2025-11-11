@@ -1,6 +1,10 @@
-# Bibliotech API — Documentação do Projeto
+# Bibliotech — API e Front-End (Admin) 
 
-Este projeto é uma API de biblioteca construída com Spring Boot, usando JPA/Hibernate para persistência, validações com Jakarta Validation, autenticação via JWT e tratamento global de erros. Os endpoints seguem uma organização por domínio (livros, compras/aluguéis, clientes, avaliações, funcionários e admins).
+Este projeto contém:
+- API de biblioteca (Spring Boot), com JPA/Hibernate, validações (Jakarta Validation), autenticação via JWT e tratamento global de erros.
+- Front-end estático servido por Spring Boot em `src/main/resources/static` (páginas e assets), incluindo o painel de administração em `/pages/admin.html`.
+
+Os endpoints seguem organização por domínio (livros, compras/aluguéis, clientes, avaliações, funcionários e admins). O front-end consome a API via `window.__API_BASE_URL__`, definida dinamicamente como `origin + '/api'`.
 
 ## Visão Geral
 - `controller`: expõe endpoints REST e converte entidades em DTOs.
@@ -74,6 +78,8 @@ Este projeto é uma API de biblioteca construída com Spring Boot, usando JPA/Hi
 ## Execução
 - Rodar localmente: `./mvnw spring-boot:run` (Windows: `mvnw.cmd spring-boot:run`).
 - Porta padrão: `8080` (configurável em `application.properties`).
+- Admin (front-end): acesse `http://localhost:8080/pages/admin.html`.
+- Base da API usada no front-end: `http://localhost:8080/api` (definida automaticamente pela página).
 
 ## Auditoria: convenção e compatibilidade
 - Campos padronizados disponíveis em todas as entidades principais: `createdAt`, `createdByEmail`, `createdByRole`.
@@ -107,6 +113,12 @@ Exemplo de resposta `LivroDTO`:
   - `GET http://localhost:8080/api/livros/buscar/titulo?titulo=...`
   - `GET http://localhost:8080/api/livros/buscar/autor?autor=...`
   - `GET http://localhost:8080/api/livros/buscar/genero?genero=...`
+ - Funcionários:
+   - `GET http://localhost:8080/api/funcionarios`
+   - `GET http://localhost:8080/api/funcionarios/{id}`
+   - `POST http://localhost:8080/api/funcionarios` (criação)
+   - `PUT http://localhost:8080/api/funcionarios/{id}` (edição)
+   - `DELETE http://localhost:8080/api/funcionarios/{id}`
 
 ## Autenticação JWT: como obter token e testar endpoints
 - Endpoints de autenticação (`AuthController`):
@@ -169,5 +181,12 @@ Observação: a senha será criptografada e o cliente poderá fazer login em seg
 - A propriedade `spring.jpa.hibernate.ddl-auto=update` criará/atualizará tabelas conforme as entidades.
 
 ## Observações
-- Comentários explicativos foram adicionados em Services, Controllers e Repositories para facilitar manutenção e onboarding.
-- Para documentação de endpoints, consulte os comentários nos Controllers.
+### Atualizações recentes do Front-End (Admin)
+- Aba Funcionários: botão "Ver Detalhes" adicionado à coluna Ações com texto, alinhado ao padrão de Clientes e Compras. A ação dispara `verDetalhesFuncionario(id)`, que busca dados na API e exibe modal de detalhes.
+- Modal "Novo Funcionário": campo de gênero agora restrito às opções "Masculino" e "Feminino".
+- Delegação de cliques nas abas centralizada, garantindo que ações de editar, excluir e ver detalhes funcionem em tabelas dinâmicas.
+
+### Dicas de uso do Admin
+- Se uma mudança de UI não aparecer, faça um hard refresh (`Ctrl+F5`).
+- Ao rodar via Spring Boot, os assets estáticos são servidos de `src/main/resources/static`. Reinicie a aplicação caso esteja executando um JAR antigo.
+- A página `admin.html` importa scripts em `/assets/js` (ex.: `admin.js`, `funcionario-modals.js`, `api.js`).
